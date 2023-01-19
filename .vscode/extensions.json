@@ -1,3 +1,6 @@
 {
-  "recommendations": ["autodesk.autolispext"]
+  "recommendations": [
+    "autodesk.autolispext",
+    "shd101wyy.markdown-preview-enhanced"
+  ]
 }
