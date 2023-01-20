@@ -1,3 +1,5 @@
+#lang racket/base
+
 (define 
   (square x)
   (* x x)
@@ -17,11 +19,11 @@
   )
 )
 
-(print (maximum-sum-of-squares 1 2 3))
+(maximum-sum-of-squares 1 2 3)
 ; 13
 
-(print (maximum-sum-of-squares 3 1 2))
+(maximum-sum-of-squares 3 1 2)
 ; 13
 
-(print (maximum-sum-of-squares 7 7 7))
+(maximum-sum-of-squares 7 7 7)
 ; 98

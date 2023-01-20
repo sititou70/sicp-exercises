@@ -10,16 +10,7 @@
 
 Ubuntu + VS Code を想定します．
 
-`sudo apt install gauche rlwrap`を実行します．
-
-.zshrc などがあれば以下を追記します．
-
-```sh
-## scheme (gache)
-### install: sudo apt install gauche rlwrap
-### uninstall: sudo apt remove gauche rlwrap
-alias gosh='rlwrap gosh -i -I "."'
-```
+`sudo apt install racket`を実行します．
 
 VS Code で，ワークスペースで推奨している拡張機能を導入します．
 
@@ -30,11 +21,11 @@ syntax ハイライトや保存時のフォーマットが有効になります�
 REPL を起動
 
 ```sh
-gosh
+racket
 ```
 
 ファイルを実行
 
 ```sh
-gosh hoge.scm
+racket hoge.scm
 ```

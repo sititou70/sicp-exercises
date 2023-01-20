@@ -1,3 +1,5 @@
+#lang racket/base
+
 (define 
   (good-enough? prev-guess guess x)
   (if (boolean? prev-guess) 
@@ -37,8 +39,8 @@
   (curt-iter #f 1.0 x)
 )
 
-(print (curt (* 10 10 10)))
+(curt (* 10 10 10))
 ; 10.000000145265767
 
-(print (curt 10))
+(curt 10)
 ; 2.154434691772293

@@ -1,3 +1,5 @@
+#lang racket/base
+
 (define 
   (a-plus-abs-b a b)
   ((if (> b 0) + -) 
@@ -14,8 +16,8 @@
 ;   a - b (b <= 0)
 ; となり，aに"bの絶対値"を加算するという関数名に一致する
 
-(print (a-plus-abs-b 10 5))
+(a-plus-abs-b 10 5)
 ; 15
 
-(print (a-plus-abs-b 10 -5))
+(a-plus-abs-b 10 -5)
 ; 15

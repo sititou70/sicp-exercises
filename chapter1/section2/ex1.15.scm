@@ -1,3 +1,5 @@
+#lang racket/base
+
 (define (cube x) (* x x x))
 (define 
   (p x)
@@ -13,7 +15,7 @@
   )
 )
 
-(print (sine 12.15))
+(sine 12.15)
 ; を評価する際に，pは5回呼ばれる
 
 ; sineの空間とステップ数の増加オーダーはについて，

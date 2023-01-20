@@ -1,3 +1,5 @@
+#lang racket/base
+
 (define 
   (average x y)
   (/ (+ x y) 2)
@@ -31,14 +33,14 @@
   (sqrt-iter 1.0 x)
 )
 
-(print (sqrt 9))
+(sqrt 9)
 ; 3.00009155413138
 
-(print (sqrt (+ 100 37)))
+(sqrt (+ 100 37))
 ; 11.704699917758145
 
-(print (sqrt (+ (sqrt 2) (sqrt 3))))
+(sqrt (+ (sqrt 2) (sqrt 3)))
 ; 1.7739279023207892
 
-(print (square (sqrt 1000)))
+(square (sqrt 1000))
 ; 1000.000369924366

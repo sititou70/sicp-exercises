@@ -1,3 +1,5 @@
+#lang racket/base
+
 ; mermaidコードを生成する
 (define (count-change amount) (cc amount 5 "hist"))
 
@@ -9,24 +11,23 @@
     (else
      (+ 
        (begin 
-         (print hist 
+         (display hist)
+         (display "[")
+         (display amount)
+         (display "_")
+         (display kinds-of-coins)
+         (display "]")
 
-                "["
-                amount
-                "_"
-                kinds-of-coins
-                "]"
+         (display "--->")
 
-                "--->"
+         (display (string-append hist "-0"))
+         (display "[")
+         (display amount)
+         (display "_")
+         (display (- kinds-of-coins 1))
+         (display "]")
+         (display "\n")
 
-                (string-append hist "-0")
-
-                "["
-                amount
-                "_"
-                (- kinds-of-coins 1)
-                "]"
-         )
          (cc 
            amount
            (- kinds-of-coins 1)
@@ -35,28 +36,29 @@
        )
 
        (begin 
-         (print hist 
+         (display hist)
+         (display "[")
+         (display amount)
+         (display "_")
+         (display kinds-of-coins)
+         (display "]")
 
-                "["
-                amount
-                "_"
+         (display "--->")
+
+         (display (string-append hist "-1"))
+         (display "[")
+         (display 
+           (- amount 
+              (first-denomination 
                 kinds-of-coins
-                "]"
-
-                "--->"
-
-                (string-append hist "-1")
-
-                "["
-                (- amount 
-                   (first-denomination 
-                     kinds-of-coins
-                   )
-                )
-                "_"
-                kinds-of-coins
-                "]"
+              )
+           )
          )
+         (display "_")
+         (display kinds-of-coins)
+         (display "]")
+         (display "\n")
+
          (cc 
            (- amount 
               (first-denomination 

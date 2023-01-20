@@ -1,3 +1,5 @@
+#lang racket/base
+
 ; 再帰的なf
 (define 
   (recursive-f n)
@@ -11,10 +13,10 @@
   )
 )
 
-(print (recursive-f 5))
-(print (recursive-f 10))
-(print (recursive-f 20))
-(print (recursive-f 30))
+(recursive-f 5)
+(recursive-f 10)
+(recursive-f 20)
+(recursive-f 35)
 
 ; 手続き的なf
 (define 
@@ -42,7 +44,7 @@
   )
 )
 
-(print (liner-f 5))
-(print (liner-f 10))
-(print (liner-f 20))
-(print (liner-f 30))
+(liner-f 5)
+(liner-f 10)
+(liner-f 20)
+(liner-f 35)

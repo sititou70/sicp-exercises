@@ -1,3 +1,5 @@
+#lang racket/base
+
 (define 
   (new-if predicate then-clause else-clause)
   (cond 
@@ -9,6 +11,11 @@
 (define 
   (average x y)
   (/ (+ x y) 2)
+)
+
+(define 
+  (square x)
+  (* x x)
 )
 
 (define 
@@ -35,7 +42,7 @@
   (sqrt-iter 1.0 x)
 )
 
-(print (sqrt 9))
+(sqrt 9)
 ; この式の評価は停止しない．
 ; Schemeは適用順序評価を用いているため，new-ifの被演算子は常に評価される．
 ; したがって，sqrt-iterが常に評価されるため，近似が停止しない
