@@ -3,8 +3,8 @@
 (require srfi/1)
 
 ; canvas
-(define width 300)
-(define height 300)
+(define width 800)
+(define height 800)
 (define canvas null)
 
 (define 
@@ -248,6 +248,63 @@
 )
 
 (define 
+  (identity painter)
+  (transform-painter 
+    painter
+    (make-vect 0.0 0.0)
+    (make-vect 1.0 0.0)
+    (make-vect 0.0 1.0)
+  )
+)
+
+(define 
+  (rotate90 painter)
+  (transform-painter 
+    painter
+    (make-vect 1.0 0.0)
+    (make-vect 1.0 1.0)
+    (make-vect 0.0 0.0)
+  )
+)
+(define 
+  (rotate180 painter)
+  (transform-painter 
+    painter
+    (make-vect 1.0 1.0)
+    (make-vect 0.0 1.0)
+    (make-vect 1.0 0.0)
+  )
+)
+(define 
+  (rotate270 painter)
+  (transform-painter 
+    painter
+    (make-vect 0.0 1.0)
+    (make-vect 0.0 0.0)
+    (make-vect 1.0 1.0)
+  )
+)
+
+(define 
+  (flip-vert painter)
+  (transform-painter 
+    painter
+    (make-vect 0.0 1.0)
+    (make-vect 1.0 1.0)
+    (make-vect 0.0 0.0)
+  )
+)
+(define 
+  (flip-horiz painter)
+  (transform-painter 
+    painter
+    (make-vect 1.0 0.0)
+    (make-vect 0.0 0.0)
+    (make-vect 1.0 1.0)
+  )
+)
+
+(define 
   (beside painter1 painter2)
   (let 
     ((split-point (make-vect 0.5 0.0)))
@@ -278,7 +335,7 @@
 )
 
 (define 
-  (below1 painter1 painter2)
+  (below painter1 painter2)
   (let 
     ((split-point (make-vect 0.0 0.5)))
     (let 
@@ -303,34 +360,6 @@
         (paint-left frame)
         (paint-right frame)
       )
-    )
-  )
-)
-
-(define 
-  (rotate-90 painter)
-  (transform-painter 
-    painter
-    (make-vect 1.0 0.0)
-    (make-vect 1.0 1.0)
-    (make-vect 0.0 0.0)
-  )
-)
-(define 
-  (rotate-270 painter)
-  (transform-painter 
-    painter
-    (make-vect 0.0 1.0)
-    (make-vect 0.0 0.0)
-    (make-vect 1.0 1.0)
-  )
-)
-(define 
-  (below2 painter1 painter2)
-  (rotate-90 
-    (beside 
-      (rotate-270 painter1)
-      (rotate-270 painter2)
     )
   )
 )
@@ -392,7 +421,141 @@
           )
         )
       )
+      ; 服を追加する
+      (bezier->segments 
+        (list (make-vect 0.37 0.33) 
+              (list (make-vect 0 0) (make-vect 0.09 0.14) (make-vect 0.22 0.01))
+        )
+      )
+      (bezier->segments 
+        (list (make-vect 0.19 0.40) 
+              (list (make-vect 0 0) (make-vect 0 0.04) (make-vect 0.04 0.07))
+        )
+      )
+      (bezier->segments 
+        (list (make-vect 0.77 0.38) 
+              (list (make-vect 0 0) (make-vect 0.01 0.06) (make-vect -0.06 0.09))
+        )
+      )
+      (bezier->segments 
+        (list (make-vect 0.29 0.84) 
+              (list (make-vect 0 0) (make-vect 0.03 0.05) (make-vect 0.1 0.03))
+        )
+      )
+      (bezier->segments 
+        (list (make-vect 0.60 0.86) 
+              (list (make-vect 0 0) (make-vect 0.05 0.01) (make-vect 0.08 -0.03))
+        )
+      )
     )
+  )
+)
+
+; patterns
+(define 
+  (split first-split second-split)
+  (lambda (painter n) 
+    (if (= n 0) 
+      painter
+      (let 
+        ((smaller 
+           ((split first-split second-split) 
+             painter
+             (- n 1)
+           )
+         ) 
+        )
+        (first-split painter (second-split smaller smaller))
+      )
+    )
+  )
+)
+(define right-split (split beside below))
+(define bottom-split (split below beside))
+; 座標系が違うため右下に向かってsplitしていく
+(define 
+  (corner-split painter n)
+  (if (= n 0) 
+    painter
+    (let 
+      ((down (bottom-split painter (- n 1))) 
+        (right (right-split painter (- n 1)))
+      )
+      (let 
+        ((bottom-left (beside down down)) 
+          (up-right (below right right))
+          (corner (corner-split painter (- n 1)))
+        )
+        (beside 
+          (below painter bottom-left)
+          (below up-right corner)
+        )
+      )
+    )
+  )
+)
+(define right-split2 (split beside (lambda (p1 p2) (rotate90 (below p1 p2)))))
+(define bottom-split2 (split below (lambda (p1 p2) (rotate270 (beside p1 p2)))))
+(define 
+  (corner-split2 painter n)
+  (if (= n 0) 
+    painter
+    (let 
+      ((down (bottom-split2 painter (- n 1))) 
+        (right (right-split2 painter (- n 1)))
+      )
+      (let 
+        ((bottom-left (beside down down)) 
+          (up-right (below right right))
+          (corner (corner-split2 painter (- n 1)))
+        )
+        (beside 
+          (below painter (rotate90 bottom-left))
+          (below (rotate270 up-right) (rotate180 corner))
+        )
+      )
+    )
+  )
+)
+(define 
+  (square-of-four tl tr bl br)
+  (lambda (painter) 
+    (let 
+      ((top (beside (tl painter) (tr painter))) 
+        (bottom (beside (bl painter) (br painter)))
+      )
+      (below bottom top)
+    )
+  )
+)
+(define 
+  (square-limit painter n)
+  (let 
+    ((combine4 
+       (square-of-four 
+         flip-horiz
+         identity
+         rotate180
+         flip-vert
+       )
+     ) 
+    )
+    (combine4 (corner-split painter n))
+  )
+)
+(define 
+  (square-limit2 painter n)
+  (let 
+    ((combine4 
+       (square-of-four 
+         flip-vert
+         rotate180
+         identity
+         flip-horiz
+       )
+     ) 
+    )
+    (combine4 (corner-split painter n))
   )
 )
 
@@ -402,13 +565,17 @@
 )
 
 (clear-canvas)
-((beside wave-painter wave-painter) canvas-frame)
-(save-image canvas "ex2.51.beside.png")
+((corner-split wave-painter 5) canvas-frame)
+(save-image canvas "ex2.52.corner-split.png")
 
 (clear-canvas)
-((below1 wave-painter wave-painter) canvas-frame)
-(save-image canvas "ex2.51.below1.png")
+((corner-split2 wave-painter 5) canvas-frame)
+(save-image canvas "ex2.52.corner-split2.png")
 
 (clear-canvas)
-((below2 wave-painter wave-painter) canvas-frame)
-(save-image canvas "ex2.51.below2.png")
+((square-limit wave-painter 4) canvas-frame)
+(save-image canvas "ex2.52.square-limit.png")
+
+(clear-canvas)
+((square-limit2 wave-painter 4) canvas-frame)
+(save-image canvas "ex2.52.square-limit2.png")

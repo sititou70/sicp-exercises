@@ -289,7 +289,7 @@
     )
   )
 )
-; inkscapeでトレースした結果のベジェ曲線を描画している
+; inkscapeでトレースしたwave.svgのベジェ曲線を描画している
 (define 
   wave-painter
   (segments->painter 
