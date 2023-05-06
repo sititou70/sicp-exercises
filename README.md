@@ -16,6 +16,15 @@ VS Code で，ワークスペースで推奨している拡張機能を導入し
 
 syntax ハイライトや保存時のフォーマットが有効になります．
 
+### `#lang sicp`をサポート
+
+例えば、3 章以降に登場する`set-car!`などのサポートに必要です。
+
+```sh
+sudo apt install libssl-dev
+raco pkg install sicp
+```
+
 ## 実行方法
 
 REPL を起動
