@@ -1,6 +1,47 @@
 #lang racket/base
 (require sicp)
 
+; table
+(define 
+  (make-table)
+  (list '*table*)
+)
+(define 
+  (assoc key records)
+  (cond 
+    ((null? records) false)
+    ((equal? key (caar records)) (car records))
+    (else (assoc key (cdr records)))
+  )
+)
+(define 
+  (lookup key table)
+  (let 
+    ((record (assoc key (cdr table))))
+    (if record 
+      (cdr record)
+      false
+    )
+  )
+)
+(define 
+  (insert! key value table)
+  (let 
+    ((record (assoc key (cdr table))))
+    (if record 
+      (set-cdr! record value)
+      (set-cdr! 
+        table
+        (cons (cons key value) 
+              (cdr table)
+        )
+      )
+    )
+  )
+  'ok
+)
+
+; tree
 (define (make-tree) (cons 'tree '()))
 (define (top-node t) (cdr t))
 (define (set-top-node! t v) (set-cdr! t v))
@@ -16,29 +57,31 @@
 (define (set-value-node! n v) (set-cdr! (cdr n) v))
 
 (define 
-  (assoc key node)
-  (let 
-    ( ;
-     (current-key (key-node node))
-    )
+  (assoc-tree key node)
+  (if (null? node) 
+    #f
+    (let 
+      ( ;
+       (current-key (key-node node))
+      )
 
-    (cond 
-      ((null? node) #f)
-      ((equal? key current-key) node)
-      (else
-       (if (< key current-key) 
-         (assoc key (left-node node))
-         (assoc key (right-node node))
-       )
+      (cond 
+        ((equal? key current-key) node)
+        (else
+         (if (< key current-key) 
+           (assoc-tree key (left-node node))
+           (assoc-tree key (right-node node))
+         )
+        )
       )
     )
   )
 )
 (define 
-  (lookup key tree)
+  (lookup-tree key tree)
   (let 
     ( ;
-     (node (assoc key (cdr tree)))
+     (node (assoc-tree key (cdr tree)))
     )
 
     (if node 
@@ -49,7 +92,7 @@
 )
 
 (define 
-  (insert! key value tree)
+  (insert-tree! key value tree)
 
   (define 
     (search-set node)
@@ -84,62 +127,109 @@
 )
 
 (define tree (make-tree))
-(insert! 6 'a tree)
-(insert! 3 'b tree)
-(insert! 8 'c tree)
-(insert! 2 'd tree)
-(insert! 4 'e tree)
-(insert! 1 'f tree)
-(insert! 5 'g tree)
-(insert! 7 'h tree)
-(insert! 9 'i tree)
+(insert-tree! 6 'a tree)
+(insert-tree! 3 'b tree)
+(insert-tree! 8 'c tree)
+(insert-tree! 2 'd tree)
+(insert-tree! 4 'e tree)
+(insert-tree! 1 'f tree)
+(insert-tree! 5 'g tree)
+(insert-tree! 7 'h tree)
+(insert-tree! 9 'i tree)
 
-(lookup 1 tree)
+(lookup-tree 1 tree)
 ; 'f
-(lookup 2 tree)
+(lookup-tree 2 tree)
 ; 'd
-(lookup 3 tree)
+(lookup-tree 3 tree)
 ; 'b
-(lookup 4 tree)
+(lookup-tree 4 tree)
 ; 'e
-(lookup 5 tree)
+(lookup-tree 5 tree)
 ; 'g
-(lookup 6 tree)
+(lookup-tree 6 tree)
 ; 'a
-(lookup 7 tree)
+(lookup-tree 7 tree)
 ; 'h
-(lookup 8 tree)
+(lookup-tree 8 tree)
 ; 'c
-(lookup 9 tree)
+(lookup-tree 9 tree)
 ; 'i
 
-(insert! 1 'a tree)
-(insert! 2 'b tree)
-(insert! 3 'c tree)
-(insert! 4 'd tree)
-(insert! 5 'e tree)
-(insert! 6 'f tree)
-(insert! 7 'g tree)
-(insert! 8 'h tree)
-(insert! 9 'i tree)
+(insert-tree! 1 'a tree)
+(insert-tree! 2 'b tree)
+(insert-tree! 3 'c tree)
+(insert-tree! 4 'd tree)
+(insert-tree! 5 'e tree)
+(insert-tree! 6 'f tree)
+(insert-tree! 7 'g tree)
+(insert-tree! 8 'h tree)
+(insert-tree! 9 'i tree)
 
-(lookup 1 tree)
+(lookup-tree 1 tree)
 ; 'a
-(lookup 2 tree)
+(lookup-tree 2 tree)
 ; 'b
-(lookup 3 tree)
+(lookup-tree 3 tree)
 ; 'c
-(lookup 4 tree)
+(lookup-tree 4 tree)
 ; 'd
-(lookup 5 tree)
+(lookup-tree 5 tree)
 ; 'e
-(lookup 6 tree)
+(lookup-tree 6 tree)
 ; 'f
-(lookup 7 tree)
+(lookup-tree 7 tree)
 ; 'g
-(lookup 8 tree)
+(lookup-tree 8 tree)
 ; 'h
-(lookup 9 tree)
+(lookup-tree 9 tree)
 ; 'i
 
-; ex2.66と比較して、lookupの処理に共通点があることがわかる。
+; ex2.66と比較して、lookupの処理に共通点があるとわかる。
+
+(require (only-in srfi/1 [iota srfi-iota] [for-each srfi-for-each]))
+
+(display "ベンチマーク")
+(newline)
+
+(define trial 10000)
+
+(display "table: ")
+(define bench-table (make-table))
+(define table-start (current-process-milliseconds))
+(srfi-for-each 
+  (lambda (_) 
+    (insert! (random trial) (random trial) bench-table)
+  )
+  (srfi-iota trial)
+)
+(srfi-for-each 
+  (lambda (_) 
+    (lookup (random trial) bench-table)
+  )
+  (srfi-iota trial)
+)
+(define table-end (current-process-milliseconds))
+(display (- table-end table-start))
+(display "msec")
+(newline)
+
+(display "tree: ")
+(define bench-tree (make-tree))
+(define tree-start (current-process-milliseconds))
+(srfi-for-each 
+  (lambda (_) 
+    (insert-tree! (random trial) (random trial) bench-tree)
+  )
+  (srfi-iota trial)
+)
+(srfi-for-each 
+  (lambda (_) 
+    (lookup-tree (random trial) bench-tree)
+  )
+  (srfi-iota trial)
+)
+(define tree-end (current-process-milliseconds))
+(display (- tree-end tree-start))
+(display "msec")
+(newline)
