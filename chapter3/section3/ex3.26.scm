@@ -233,3 +233,7 @@
 (display (- tree-end tree-start))
 (display "msec")
 (newline)
+
+; ベンチマーク
+; table: 1489msec
+; tree: 12msec
