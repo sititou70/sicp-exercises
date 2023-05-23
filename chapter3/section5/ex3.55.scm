@@ -36,12 +36,14 @@
 
 (define ones (cons-stream 1 ones))
 (define integers (cons-stream 1 (add-streams ones integers)))
+
+; 参考：http://community.schemewiki.org/?sicp-ex-3.55
 (define 
-  partial-sums
-  (cons-stream 1 (add-streams (stream-cdr integers) partial-sums))
+  (partial-sums s)
+  (add-streams s (cons-stream 0 (partial-sums s)))
 )
 
-(print-stream-nth partial-sums 10)
+(print-stream-nth (partial-sums integers) 10)
 ; [0] 1
 ; [1] 3
 ; [2] 6
