@@ -3,9 +3,10 @@
 
 (require sicp)
 (require "expression.scm")
-(require "internal-data-structure.scm")
-(require "primitive-procedures.scm")
+(require "procedure.scm")
+(require "environment.scm")
 
+; eval
 (define 
   (eval exp env)
   (cond 
@@ -38,6 +39,45 @@
 )
 
 (define 
+  (eval-assignment exp env)
+  (set-variable-value! 
+    (assignment-variable exp)
+    (eval (assignment-value exp) env)
+    env
+  )
+  'ok
+)
+
+(define 
+  (eval-definition exp env)
+  (define-variable! 
+    (definition-variable exp)
+    (eval (definition-value exp) env)
+    env
+  )
+  'ok
+)
+
+(define 
+  (eval-if exp env)
+  (if (true? (eval (if-predicate exp) env)) 
+    (eval (if-consequent exp) env)
+    (eval (if-alternative exp) env)
+  )
+)
+
+(define 
+  (list-of-values exps env)
+  (if (no-operands? exps) 
+    '()
+    (cons (eval (first-operand exps) env) 
+          (list-of-values (rest-operands exps) env)
+    )
+  )
+)
+
+; apply
+(define 
   (apply procedure arguments)
   (cond 
     ((primitive-procedure? procedure)
@@ -63,43 +103,8 @@
 )
 
 ; utils
-(define 
-  (eval-if exp env)
-  (if (true? (eval (if-predicate exp) env)) 
-    (eval (if-consequent exp) env)
-    (eval (if-alternative exp) env)
-  )
-)
-
-(define 
-  (eval-assignment exp env)
-  (set-variable-value! 
-    (assignment-variable exp)
-    (eval (assignment-value exp) env)
-    env
-  )
-  'ok
-)
-
-(define 
-  (eval-definition exp env)
-  (define-variable! 
-    (definition-variable exp)
-    (eval (definition-value exp) env)
-    env
-  )
-  'ok
-)
-
-(define 
-  (list-of-values exps env)
-  (if (no-operands? exps) 
-    '()
-    (cons (eval (first-operand exps) env) 
-          (list-of-values (rest-operands exps) env)
-    )
-  )
-)
+(define (true? x) (not (eq? x false)))
+(define (false? x) (eq? x false))
 
 (define 
   (eval-sequence exps env)

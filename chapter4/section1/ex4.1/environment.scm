@@ -2,23 +2,6 @@
 (provide (all-defined-out))
 
 (require sicp)
-(require "tag.scm")
-
-(define (true? x) (not (eq? x false)))
-(define (false? x) (eq? x false))
-
-; compound-procedure
-(define 
-  (make-procedure parameters body env)
-  (list 'procedure parameters body env)
-)
-(define 
-  (compound-procedure? p)
-  (tagged-list? p 'procedure)
-)
-(define (procedure-parameters p) (cadr p))
-(define (procedure-body p) (caddr p))
-(define (procedure-environment p) (cadddr p))
 
 ; environment
 (define (enclosing-environment env) (cdr env))

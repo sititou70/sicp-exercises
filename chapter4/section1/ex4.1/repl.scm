@@ -3,8 +3,8 @@
 
 (require (rename-in sicp [apply sicp-apply] [eval sicp-eval]))
 (require "eval-apply.scm")
-(require "internal-data-structure.scm")
-(require "primitive-procedures.scm")
+(require "environment.scm")
+(require "procedure.scm")
 
 ; global environment
 (define 
