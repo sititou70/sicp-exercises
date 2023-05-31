@@ -1,8 +1,8 @@
 #lang racket
 
 (require (rename-in sicp [apply sicp-apply] [eval sicp-eval]))
-(require "repl.scm")
 (require "eval-apply.scm")
+(require "global-environment.scm")
 
 ; main
 
