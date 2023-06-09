@@ -31,7 +31,6 @@
     (list '>= >=)
     (list 'abs abs)
     (list 'member member)
-    (list 'sleep sleep)
     (list 'display display)
     (list 'displayln displayln)
   )
