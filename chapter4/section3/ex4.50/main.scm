@@ -65,6 +65,19 @@
 (define repl (make-repl))
 
 ; main
+; rambをサポートしている
+(repl '(ramb 1 2 3 4 5))
+(repl 'try-again)
+(repl 'try-again)
+(repl 'try-again)
+(repl 'try-again)
+(repl 'try-again)
+; 4
+; 5
+; 1
+; 2
+; 3
+
 (repl 
   '
   (define 
@@ -95,8 +108,12 @@
   (define 
     (parse-word word-list)
 
-    ; とりあえずリストの最初の単語を選択する
-    (define selected-word (car (cdr word-list)))
+    ; ある程度の長さになったら打ち切る
+    (if (> (length *unparsed*) 10) (amb))
+
+    ; ランダムな単語を選択する
+    (define words (cdr word-list))
+    (define selected-word (list-ref words (random (length words))))
 
     (set! *unparsed* (append *unparsed* (list selected-word)))
     (list (car word-list) selected-word)
@@ -120,7 +137,7 @@
     (parse-verb-phrase)
     (define 
       (maybe-extend verb-phrase)
-      (amb 
+      (ramb 
         verb-phrase
         (maybe-extend 
           (list 'verb-phrase 
@@ -150,7 +167,7 @@
     (parse-noun-phrase)
     (define 
       (maybe-extend noun-phrase)
-      (amb 
+      (ramb 
         noun-phrase
         (maybe-extend 
           (list 'noun-phrase 
@@ -180,22 +197,27 @@
   '
   (define 
     (generate)
-    *unparsed*
     (parse-sentence)
+    *unparsed*
   )
 )
 
-(repl 
-  '(generate)
-)
+(repl '(generate))
 (repl 'try-again)
 (repl 'try-again)
 (repl 'try-again)
 (repl 'try-again)
-; {the student studies}
-; {the student studies for the student}
-; {the student studies for the student for the student}
-; {the student studies for the student for the student for the student}
-; {the student studies for the student for the student for the student for the student}
+(repl 'try-again)
+(repl 'try-again)
+(repl 'try-again)
+(repl 'try-again)
+; {the cat sleeps}
+; {the cat sleeps for the student with a class}
+; {the cat sleeps for the student to the professor}
+; {the cat sleeps for the student}
+; {the cat in a student for a professor sleeps}
+; {the cat in a student with a professor sleeps}
+; {the cat in a student eats with a cat}
+; {the cat in a student eats}
 
-; 文法が再帰的であるため、前置詞句が単調に再帰する文章が生成されており、あまりおもしろくない。
+; rambの効果により、構文の構造をランダムにパース（生成）できている
