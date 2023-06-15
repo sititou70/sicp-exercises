@@ -5,6 +5,7 @@
 (require "data-directed-utils.scm")
 (require "expressions.scm")
 (require "variable.scm")
+(require "stream.scm")
 
 ; data dietric utils
 (define 
