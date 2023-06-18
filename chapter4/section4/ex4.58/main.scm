@@ -39,3 +39,6 @@
 )
 
 (repl '(bigshot ?x))
+; {bigshot {Warbucks Oliver}}
+; {bigshot {Scrooge Eben}}
+; {bigshot {Bitdiddle Ben}}
