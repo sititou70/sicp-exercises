@@ -18,19 +18,20 @@
   )
 )
 
-; a
-(repl '(meeting ?division (Friday . ?rest)))
-; {meeting administration {Friday 1pm}}
-
-; b
 (repl 
   '
   (assert! 
     (rule 
-      (meeting-time ?person ?day-and-time)
-    )
-  )
-)
+      (bigshot ?person)
+      (and 
+        (job ?person (?division . ?rest1))
+        (or 
+          (not (supervisor ?person ?boss))
+          (and 
+            (supervisor ?person ?boss)
+            (job ?boss (?boss-division . ?rest2))
+            (not (same ?division ?boss-division))
+          )
         )
       )
     )

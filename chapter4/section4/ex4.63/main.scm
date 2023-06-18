@@ -36,5 +36,12 @@
 )
 
 (repl '(grandson Cain ?x))
+; {grandson Cain Irad}
+
 (repl '(son Lamech ?x))
+; {son Lamech Jubal}
+; {son Lamech Jabal}
+
 (repl '(grandson Methushael ?x))
+; {grandson Methushael Jubal}
+; {grandson Methushael Jabal}

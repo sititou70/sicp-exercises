@@ -31,4 +31,3 @@
 ; {and {not {lisp-valie {lambda {x} #f} 1}} {supervisor {Tweakit Lem E} {Bitdiddle Ben}}}
 ; {and {not {lisp-valie {lambda {x} #f} 1}} {supervisor {Fect Cy D} {Bitdiddle Ben}}}
 ; {and {not {lisp-valie {lambda {x} #f} 1}} {supervisor {Hacker Alyssa P} {Bitdiddle Ben}}}
-

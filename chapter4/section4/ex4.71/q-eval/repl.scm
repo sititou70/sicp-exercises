@@ -52,6 +52,7 @@
   repl
 )
 
+; transform query -> internal variable representation
 (define 
   (query-syntax-process exp)
   (map-over-symbols expand-question-mark exp)
@@ -86,6 +87,7 @@
   )
 )
 
+; transform internal variable representation -> human-readable symbol
 (define 
   (contract-question-mark variable)
   (string->symbol 
