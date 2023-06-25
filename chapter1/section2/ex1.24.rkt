@@ -1,6 +1,6 @@
 #lang racket/base
 ; https://planet.racket-lang.org/display.ss?package=science.plt&owner=williams
-; sudo raco planet install "williams" "science.plt" 4 8
+; raco planet install "williams" "science.plt" 4 8
 (require (planet williams/science:4:8/science))
 
 (define 
