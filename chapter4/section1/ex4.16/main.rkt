@@ -18,52 +18,40 @@
 ; 1
 
 ; defineを含む式は
-(eval 
-  '(lambda () 
-     (define u 1)
-     (define v 2)
-     (cons u v)
-   )
-  the-global-environment
+(displayln 
+  (eval 
+    '(lambda () 
+       (define u 1)
+       (define (v) 2)
+       (cons u (v))
+     )
+    the-global-environment
+  )
 )
 ; 以下のように変換が行われているとわかる
-; (list 
-;   'procedure
-;   '()
-;   (list 
-;     (mcons 
-;       'let
-;       (mcons 
-;         ; binds
-;         (list 
-;           (list 
-;             'v
-;             (list 'quote '*unassigned*)
-;           )
-;           (list 
-;             'u
-;             (list 'quote '*unassigned*)
-;           )
-;         )
+; (
+;   procedure 
+;   ()
+;   ((let 
+;      ( ;
+;       (v (quote *unassigned*))
+;       (u (quote *unassigned*))
+;      )
 ; 
-;         ; body
-;         (list 
-;           (list 'set! 'u 1)
-;           (list 'set! 'v 2)
-;           (list 'cons 'u 'v)
-;         )
-;       )
-;     )
+;      (set! u 1)
+;      (set! v (lambda () 2))
+;      (cons u (v))
+;    ) 
 ;   )
-;   'env
+;   ...environment...
 ; )
 
 ; 実際に適用すると
 (eval 
   '((lambda () 
       (define u 1)
-      (define v 2)
-      (cons u v)
+      (define (v) 2)
+      (cons u (v))
     )
    )
   the-global-environment

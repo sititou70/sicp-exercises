@@ -60,8 +60,15 @@
     (scan-out body)
     (cond 
       ((null? body) '())
-      ((tagged-list? (car body) 'define)
-       (cons (cons 'set! (cdar body)) (scan-out (cdr body)))
+      ((definition? (car body))
+       (cons 
+         (list 
+           'set!
+           (definition-variable (car body))
+           (definition-value (car body))
+         )
+         (scan-out (cdr body))
+       )
       )
       (else (cons (car body) (scan-out (cdr body))))
     )
@@ -71,11 +78,11 @@
     (get-binds binds body)
     (cond 
       ((null? body) binds)
-      ((tagged-list? (car body) 'define)
+      ((definition? (car body))
        (get-binds 
          (cons 
            (list 
-             (cadar body)
+             (definition-variable (car body))
              ; 単に「'*unassigned*」と書くと、メタ言語上では「*unassigned*という変数」という意味になってしまう
              (quote '*unassigned*)
            )
