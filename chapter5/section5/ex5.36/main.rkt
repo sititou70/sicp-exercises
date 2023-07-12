@@ -14,7 +14,7 @@
   (define 
     machine
     (make-machine 
-      '(exp env val proc argl continue)
+      '(env val proc argl continue)
       compile-operations
       insts
     )

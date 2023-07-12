@@ -510,8 +510,6 @@
     (list 'primitive-procedure? primitive-procedure?)
     (list 'apply-primitive-procedure apply-primitive-procedure)
     (list 'compiled-procedure-entry compiled-procedure-entry)
-    (list 'compiled-procedure-entry compiled-procedure-entry)
-    (list 'compiled-procedure-entry compiled-procedure-entry)
   )
 )
 
