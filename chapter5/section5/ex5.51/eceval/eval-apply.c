@@ -10,18 +10,18 @@
 #include "global-environment.h"
 #include "procedure.h"
 
-#define goto(a) return a
-#define assign(a, b) \
-  a = b;             \
+#define goto(dest) return dest
+#define assign(dest, src) \
+  dest = src;             \
   gc_check()
-#define perform(a) a
-#define test(a)   \
-  reg_flag = (a); \
+#define perform(x) x
+#define test(res) \
+  reg_flag = res; \
   gc_check()
-#define branch(a) \
-  if (reg_flag) return a
-#define save(e) push_stack(e)
-#define restore(e) e = pop_stack()
+#define branch(dest) \
+  if (reg_flag) return dest
+#define save(reg) push_stack(reg)
+#define restore(reg) reg = pop_stack()
 
 void* eval_dispatch(void) {
   test(is_self_evaluating(reg_exp));

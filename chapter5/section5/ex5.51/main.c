@@ -55,35 +55,21 @@ int main(int argc, char* argv[]) {
 
   // repl
   char input_buffer[BUF_SIZE] = {};
-  char output_buffer[BUF_SIZE] = {};
   lisp_value_t* parse_result = NULL;
   while (1) {
     printf("> ");
     fflush(stdout);
-    int scanf_state = scanf("%1023[^\n]%*c", input_buffer);
+    int scaned_num = scanf("%1023[^\n]%*c", input_buffer);
 
-    if (scanf_state == 0) {
+    if (scaned_num == 0) {
       scanf("%*c");
       continue;
     };
 
-    if (scanf_state == EOF) break;
+    if (scaned_num == EOF) break;
 
-    char* input = input_buffer;
-    while (1) {
-      char* next = parse_lisp_value(input, &parse_result);
-      if (parse_result == NULL) {
-        input = next;
-        continue;
-      }
-
-      memset(output_buffer, '\0', BUF_SIZE);
-      print_lisp_value(eval(parse_result), output_buffer);
-      printf("%s\n", output_buffer);
-
-      if (next == input || *next == '\0') break;
-      input = next;
-    }
+    parse_lisp_value(input_buffer, &parse_result);
+    printf_lisp_value(eval(parse_result));
   }
 
   return 0;

@@ -63,7 +63,7 @@ lisp_value_t *make_number(double num) {
   return val;
 }
 lisp_value_t *make_symbol(char *str) {
-  char *symbol = malloc(sizeof(char) * strlen(str));
+  char *symbol = malloc(sizeof(char) * (strlen(str) + 1));
   strcpy(symbol, str);
 
   lisp_value_t *val = (lisp_value_t *)malloc(sizeof(lisp_value_t));
@@ -192,10 +192,10 @@ void gc(lisp_value_t **registers, size_t registers_len, lisp_value_t **stack, si
 
 // should mark stack
 lisp_value_t *should_mark[GC_TABLE_SIZE + STACK_SIZE] = {};
-// 次の空き領域、または空きがない（= GC_TABLE_SIZE）状態を表す
+// 次の空き領域、または空きがない（= GC_TABLE_SIZE + STACK_SIZE）状態を表す
 size_t should_mark_index = 0;
 void push_should_mark(lisp_value_t *val) {
-  if (should_mark_index == GC_TABLE_SIZE) {
+  if (should_mark_index == GC_TABLE_SIZE + STACK_SIZE) {
     fprintf(stderr, "push_should_mark: no free workspaces. gc failed.\n");
     exit(1);
   }

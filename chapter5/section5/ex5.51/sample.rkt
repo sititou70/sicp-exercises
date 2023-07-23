@@ -57,9 +57,13 @@
 ; 11
 
 ; primitive procedure application
-(+ 6 6)
+(displayln 
+  (+ 6 6)
+)
 ; 12
-(cdr (cons 999 13))
+(displayln 
+  (cdr (cons 999 13))
+)
 ; 13
 
 ; 複雑な例

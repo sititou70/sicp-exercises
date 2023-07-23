@@ -2,6 +2,7 @@
   "recommendations": [
     "autodesk.autolispext",
     "shd101wyy.markdown-preview-enhanced",
-    "evzen-wybitul.magic-racket"
+    "evzen-wybitul.magic-racket",
+    "foxundermoon.shell-format"
   ]
 }

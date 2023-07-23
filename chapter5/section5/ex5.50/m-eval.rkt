@@ -277,7 +277,6 @@
         (list '> >)
         (list 'eq? eq?)
         (list 'not not)
-        (list 'te displayln)
 
         ; i/o
         (list 'display display)

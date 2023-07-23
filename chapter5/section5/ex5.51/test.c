@@ -9,6 +9,13 @@
 
 #define BUF_SIZE 128
 
+// utils
+int reset_and_print_lisp_value(lisp_value_t *value, char *buf) {
+  reset_printed_stack();
+  return print_lisp_value(value, buf);
+}
+
+// test cases
 void test_cons_car_cdr(void) {
   lisp_value_t *l = list(make_number(3.141592), make_symbol("hello"), make_number(1.0));
 
@@ -74,35 +81,35 @@ void test_parser_printer(void) {
   memset(output_buffer, '\0', BUF_SIZE);
   result = NULL;
   parse_lisp_value("   123.456  ", &result);
-  print_lisp_value(result, output_buffer);
+  reset_and_print_lisp_value(result, output_buffer);
   CU_ASSERT_STRING_EQUAL(output_buffer, "123.456000");
 
   // quote
   memset(output_buffer, '\0', BUF_SIZE);
   result = NULL;
   parse_lisp_value("  'a  ", &result);
-  print_lisp_value(result, output_buffer);
+  reset_and_print_lisp_value(result, output_buffer);
   CU_ASSERT_STRING_EQUAL(output_buffer, "(quote a)");
 
   // list
   memset(output_buffer, '\0', BUF_SIZE);
   result = NULL;
   parse_lisp_value("  ( a  b   c   )  ", &result);
-  print_lisp_value(result, output_buffer);
+  reset_and_print_lisp_value(result, output_buffer);
   CU_ASSERT_STRING_EQUAL(output_buffer, "(a b c)");
 
   // nested list
   memset(output_buffer, '\0', BUF_SIZE);
   result = NULL;
   parse_lisp_value("(a(b c)  d)", &result);
-  print_lisp_value(result, output_buffer);
+  reset_and_print_lisp_value(result, output_buffer);
   CU_ASSERT_STRING_EQUAL(output_buffer, "(a (b c) d)");
 
   // symbol
   memset(output_buffer, '\0', BUF_SIZE);
   result = NULL;
   parse_lisp_value("  symbol  ", &result);
-  print_lisp_value(result, output_buffer);
+  reset_and_print_lisp_value(result, output_buffer);
   CU_ASSERT_STRING_EQUAL(output_buffer, "symbol");
 
   // complex
@@ -120,7 +127,7 @@ void test_parser_printer(void) {
       ")\n";
   result = NULL;
   parse_lisp_value(complex_input, &result);
-  print_lisp_value(result, output_buffer);
+  reset_and_print_lisp_value(result, output_buffer);
   CU_ASSERT_STRING_EQUAL(output_buffer,
                          "(define (fib n) (if (< n 2.000000) n (+ (fib (- n 1.000000)) (fib (- n 2.000000)))))");
 
@@ -130,15 +137,15 @@ void test_parser_printer(void) {
 
   char *next = NULL;
   next = parse_lisp_value("    1   sym    \n (list) ", &result);
-  print_lisp_value(result, output_buffer);
+  reset_and_print_lisp_value(result, output_buffer);
   CU_ASSERT_STRING_EQUAL(output_buffer, "1.000000");
 
   next = parse_lisp_value(next, &result);
-  print_lisp_value(result, output_buffer);
+  reset_and_print_lisp_value(result, output_buffer);
   CU_ASSERT_STRING_EQUAL(output_buffer, "sym");
 
   next = parse_lisp_value(next, &result);
-  print_lisp_value(result, output_buffer);
+  reset_and_print_lisp_value(result, output_buffer);
   CU_ASSERT_STRING_EQUAL(output_buffer, "(list)");
 }
 
@@ -176,18 +183,18 @@ void test_eceval(void) {
   // self-evaluating
   memset(output_buffer, '\0', BUF_SIZE);
   parse_lisp_value("1", &result);
-  print_lisp_value(eval(result), output_buffer);
+  reset_and_print_lisp_value(eval(result), output_buffer);
   CU_ASSERT_STRING_EQUAL(output_buffer, "1.000000");
 
   // quote
   memset(output_buffer, '\0', BUF_SIZE);
   parse_lisp_value("'quote_value", &result);
-  print_lisp_value(eval(result), output_buffer);
+  reset_and_print_lisp_value(eval(result), output_buffer);
   CU_ASSERT_STRING_EQUAL(output_buffer, "quote_value");
 
   memset(output_buffer, '\0', BUF_SIZE);
   parse_lisp_value("'2", &result);
-  print_lisp_value(eval(result), output_buffer);
+  reset_and_print_lisp_value(eval(result), output_buffer);
   CU_ASSERT_STRING_EQUAL(output_buffer, "2.000000");
 
   // definition, variable assignment
@@ -195,65 +202,65 @@ void test_eceval(void) {
   parse_lisp_value("(define a 3)", &result);
   eval(result);
   parse_lisp_value("a", &result);
-  print_lisp_value(eval(result), output_buffer);
+  reset_and_print_lisp_value(eval(result), output_buffer);
   CU_ASSERT_STRING_EQUAL(output_buffer, "3.000000");
 
   memset(output_buffer, '\0', BUF_SIZE);
   parse_lisp_value("(set! a 4)", &result);
   eval(result);
   parse_lisp_value("a", &result);
-  print_lisp_value(eval(result), output_buffer);
+  reset_and_print_lisp_value(eval(result), output_buffer);
   CU_ASSERT_STRING_EQUAL(output_buffer, "4.000000");
 
   // if
   memset(output_buffer, '\0', BUF_SIZE);
   parse_lisp_value("(if true 5)", &result);
-  print_lisp_value(eval(result), output_buffer);
+  reset_and_print_lisp_value(eval(result), output_buffer);
   CU_ASSERT_STRING_EQUAL(output_buffer, "5.000000");
 
   memset(output_buffer, '\0', BUF_SIZE);
   parse_lisp_value("(if false 999 6)", &result);
-  print_lisp_value(eval(result), output_buffer);
+  reset_and_print_lisp_value(eval(result), output_buffer);
   CU_ASSERT_STRING_EQUAL(output_buffer, "6.000000");
 
   // lambda, compound procedure application
   memset(output_buffer, '\0', BUF_SIZE);
   parse_lisp_value("((lambda (a) a) 7)", &result);
-  print_lisp_value(eval(result), output_buffer);
+  reset_and_print_lisp_value(eval(result), output_buffer);
   CU_ASSERT_STRING_EQUAL(output_buffer, "7.000000");
 
   parse_lisp_value("(define (eight) 8)", &result);
   eval(result);
   parse_lisp_value("(eight)", &result);
-  print_lisp_value(eval(result), output_buffer);
+  reset_and_print_lisp_value(eval(result), output_buffer);
   CU_ASSERT_STRING_EQUAL(output_buffer, "8.000000");
 
   // begin
   memset(output_buffer, '\0', BUF_SIZE);
   parse_lisp_value("(begin (set! a 9) a)", &result);
-  print_lisp_value(eval(result), output_buffer);
+  reset_and_print_lisp_value(eval(result), output_buffer);
   CU_ASSERT_STRING_EQUAL(output_buffer, "9.000000");
 
   // cond
   memset(output_buffer, '\0', BUF_SIZE);
   parse_lisp_value("(cond (false 999) ((= a 9) 10))", &result);
-  print_lisp_value(eval(result), output_buffer);
+  reset_and_print_lisp_value(eval(result), output_buffer);
   CU_ASSERT_STRING_EQUAL(output_buffer, "10.000000");
 
   memset(output_buffer, '\0', BUF_SIZE);
   parse_lisp_value("(cond (false 999) (else 11))", &result);
-  print_lisp_value(eval(result), output_buffer);
+  reset_and_print_lisp_value(eval(result), output_buffer);
   CU_ASSERT_STRING_EQUAL(output_buffer, "11.000000");
 
   // primitive procedure application
   memset(output_buffer, '\0', BUF_SIZE);
   parse_lisp_value("(+ 6 6)", &result);
-  print_lisp_value(eval(result), output_buffer);
+  reset_and_print_lisp_value(eval(result), output_buffer);
   CU_ASSERT_STRING_EQUAL(output_buffer, "12.000000");
 
   memset(output_buffer, '\0', BUF_SIZE);
   parse_lisp_value("(cdr (cons 999 13))", &result);
-  print_lisp_value(eval(result), output_buffer);
+  reset_and_print_lisp_value(eval(result), output_buffer);
   CU_ASSERT_STRING_EQUAL(output_buffer, "13.000000");
 
   // complex
@@ -272,7 +279,7 @@ void test_eceval(void) {
   parse_lisp_value(append, &result);
   eval(result);
   parse_lisp_value("(append '(a b c) '(d e f))", &result);
-  print_lisp_value(eval(result), output_buffer);
+  reset_and_print_lisp_value(eval(result), output_buffer);
   CU_ASSERT_STRING_EQUAL(output_buffer, "(a b c d e f)");
 
   // fib
@@ -292,62 +299,62 @@ void test_eceval(void) {
 
   memset(output_buffer, '\0', BUF_SIZE);
   parse_lisp_value("(fib 1)", &result);
-  print_lisp_value(eval(result), output_buffer);
+  reset_and_print_lisp_value(eval(result), output_buffer);
   CU_ASSERT_STRING_EQUAL(output_buffer, "1.000000");
 
   memset(output_buffer, '\0', BUF_SIZE);
   parse_lisp_value("(fib 2)", &result);
-  print_lisp_value(eval(result), output_buffer);
+  reset_and_print_lisp_value(eval(result), output_buffer);
   CU_ASSERT_STRING_EQUAL(output_buffer, "1.000000");
 
   memset(output_buffer, '\0', BUF_SIZE);
   parse_lisp_value("(fib 3)", &result);
-  print_lisp_value(eval(result), output_buffer);
+  reset_and_print_lisp_value(eval(result), output_buffer);
   CU_ASSERT_STRING_EQUAL(output_buffer, "2.000000");
 
   memset(output_buffer, '\0', BUF_SIZE);
   parse_lisp_value("(fib 4)", &result);
-  print_lisp_value(eval(result), output_buffer);
+  reset_and_print_lisp_value(eval(result), output_buffer);
   CU_ASSERT_STRING_EQUAL(output_buffer, "3.000000");
 
   memset(output_buffer, '\0', BUF_SIZE);
   parse_lisp_value("(fib 5)", &result);
-  print_lisp_value(eval(result), output_buffer);
+  reset_and_print_lisp_value(eval(result), output_buffer);
   CU_ASSERT_STRING_EQUAL(output_buffer, "5.000000");
 
   memset(output_buffer, '\0', BUF_SIZE);
   parse_lisp_value("(fib 6)", &result);
-  print_lisp_value(eval(result), output_buffer);
+  reset_and_print_lisp_value(eval(result), output_buffer);
   CU_ASSERT_STRING_EQUAL(output_buffer, "8.000000");
 
   memset(output_buffer, '\0', BUF_SIZE);
   parse_lisp_value("(fib 7)", &result);
-  print_lisp_value(eval(result), output_buffer);
+  reset_and_print_lisp_value(eval(result), output_buffer);
   CU_ASSERT_STRING_EQUAL(output_buffer, "13.000000");
 
   memset(output_buffer, '\0', BUF_SIZE);
   parse_lisp_value("(fib 8)", &result);
-  print_lisp_value(eval(result), output_buffer);
+  reset_and_print_lisp_value(eval(result), output_buffer);
   CU_ASSERT_STRING_EQUAL(output_buffer, "21.000000");
 
   memset(output_buffer, '\0', BUF_SIZE);
   parse_lisp_value("(fib 9)", &result);
-  print_lisp_value(eval(result), output_buffer);
+  reset_and_print_lisp_value(eval(result), output_buffer);
   CU_ASSERT_STRING_EQUAL(output_buffer, "34.000000");
 
   memset(output_buffer, '\0', BUF_SIZE);
   parse_lisp_value("(fib 10)", &result);
-  print_lisp_value(eval(result), output_buffer);
+  reset_and_print_lisp_value(eval(result), output_buffer);
   CU_ASSERT_STRING_EQUAL(output_buffer, "55.000000");
 
   memset(output_buffer, '\0', BUF_SIZE);
   parse_lisp_value("(fib 20)", &result);
-  print_lisp_value(eval(result), output_buffer);
+  reset_and_print_lisp_value(eval(result), output_buffer);
   CU_ASSERT_STRING_EQUAL(output_buffer, "6765.000000");
 
   memset(output_buffer, '\0', BUF_SIZE);
   parse_lisp_value("(fib 25)", &result);
-  print_lisp_value(eval(result), output_buffer);
+  reset_and_print_lisp_value(eval(result), output_buffer);
   CU_ASSERT_STRING_EQUAL(output_buffer, "75025.000000");
 
   set_gc_silent_mode(false);
@@ -362,7 +369,7 @@ void test_tail_recursion(void) {
   parse_lisp_value("(define (sum x res) (if (< 100000 x) res (sum (+ x 1) (+ res x))))", &result);
   eval(result);
   parse_lisp_value("(sum 0 0)", &result);
-  print_lisp_value(eval(result), output_buffer);
+  reset_and_print_lisp_value(eval(result), output_buffer);
   CU_ASSERT_STRING_EQUAL(output_buffer, "5000050000.000000");
 
   set_gc_silent_mode(false);
