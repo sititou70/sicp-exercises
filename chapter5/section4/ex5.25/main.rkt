@@ -44,12 +44,8 @@
   '
   ( ;
    ; self-evaluating
-   true
-   false
    1
    "2"
-   ; #t
-   ; #f
    ; 1
    ; 2
 

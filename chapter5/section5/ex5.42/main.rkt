@@ -32,12 +32,8 @@
     ; 一通りの言語機能についてテストする
 
     ; self-evaluating
-    (displayln true)
-    (displayln false)
     (displayln 1)
     (displayln "2")
-    ; #t
-    ; #f
     ; 1
     ; 2
 

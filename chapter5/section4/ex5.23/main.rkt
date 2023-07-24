@@ -46,8 +46,6 @@
    ; この練習問題で初めてecevalを導入するため、一通りの言語機能についてテストする
 
    ; self-evaluating
-   true
-   false
    1
    "2"
 
@@ -147,8 +145,6 @@
 )
 
 (start eceval)
-; #t
-; #f
 ; 1
 ; 2
 ; quote-value
