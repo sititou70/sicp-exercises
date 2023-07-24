@@ -1,6 +1,8 @@
 # sicp-exercises
 
-計算機プログラムの構造と解釈（SICP）の練習問題を解いたもの
+計算機プログラムの構造と解釈（SICP）の練習問題を解いたもの。練習問題 4.79 の自由回答のみスキップしています。
+
+## テキスト
 
 - [真鍋訳：SICP 非公式日本語版 翻訳改訂版](http://vocrf.net/docs_ja/jsicp.pdf)
 - [和田訳：計算機プログラムの構造と解釈](https://sicp.iijlab.net/fulltext/xcont.html)
