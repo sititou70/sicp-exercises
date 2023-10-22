@@ -3,6 +3,7 @@
     "autodesk.autolispext",
     "shd101wyy.markdown-preview-enhanced",
     "evzen-wybitul.magic-racket",
-    "foxundermoon.shell-format"
+    "foxundermoon.shell-format",
+    "ms-vscode.cpptools"
   ]
 }
