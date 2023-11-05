@@ -47,7 +47,7 @@ lisp_value_t *make_internal_label(void *(*label)(void));
 // # gc
 // ################
 
-#define GC_TABLE_SIZE 2048
+#define GC_TABLE_SIZE 65536
 
 void gc_register(lisp_value_t *val);
 void gc_check();

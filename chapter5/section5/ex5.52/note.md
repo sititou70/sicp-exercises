@@ -33,10 +33,10 @@ wc main.c
 
 さらに、`m-eval.rkt`は 4.1 節のメタ循環評価器を、練習問題 5.51 の処理系で実行できるように多少変更したものである。
 
-次のようにすることで、メタ循環評価器をコンパイルし、その上で`sample.rkt`を実行できる。ただし、実行には時間がかかるため、gc のログを抑制している。
+次のようにすることで、メタ循環評価器をコンパイルし、その上で`sample.rkt`を実行できる。
 
 ```sh
-./compile.sh m-eval.rkt; ./main sample.rkt | grep -v gc
+./compile.sh m-eval.rkt; ./main sample.rkt
 # 1.000000
 # quote_value
 # 2.000000
