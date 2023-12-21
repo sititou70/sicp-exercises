@@ -5,22 +5,22 @@
 #include "../machine/utils.h"
 
 // environment: frameのリスト。レキシカル環境を表現する
-lisp_value_t* enclosing_environment(lisp_value_t* env) { return cdr(env); }
-lisp_value_t* first_frame(lisp_value_t* env) { return car(env); }
+tlisp_value_t* enclosing_environment(tlisp_value_t* tenv) { return cdr(tenv); }
+tlisp_value_t* first_frame(tlisp_value_t* tenv) { return car(tenv); }
 
 // frame: 変数リストと値リストのペア。束縛を表現する
-lisp_value_t* make_frame(lisp_value_t* variables, lisp_value_t* values) { return cons(variables, values); }
-lisp_value_t* frame_variables(lisp_value_t* frame) { return car(frame); }
-lisp_value_t* frame_values(lisp_value_t* frame) { return cdr(frame); }
-void add_binding_to_frame(lisp_value_t* var, lisp_value_t* val, lisp_value_t* frame) {
-  set_car(frame, cons(var, car(frame)));
-  set_cdr(frame, cons(val, cdr(frame)));
+tlisp_value_t* make_frame(tlisp_value_t* tvariables, tlisp_value_t* tvalues) { return cons(tvariables, tvalues); }
+tlisp_value_t* frame_variables(tlisp_value_t* tframe) { return car(tframe); }
+tlisp_value_t* frame_values(tlisp_value_t* tframe) { return cdr(tframe); }
+void add_binding_to_frame(tlisp_value_t* tvar, tlisp_value_t* tval, tlisp_value_t* tframe) {
+  set_car(tframe, cons(tvar, car(tframe)));
+  set_cdr(tframe, cons(tval, cdr(tframe)));
 }
 
 // utils
-lisp_value_t* extend_environment(lisp_value_t* vars, lisp_value_t* vals, lisp_value_t* base_env) {
-  size_t vars_len = length(vars);
-  size_t vals_len = length(vals);
+tlisp_value_t* extend_environment(tlisp_value_t* tvars, tlisp_value_t* tvals, tlisp_value_t* tbase_env) {
+  size_t vars_len = length(tvars);
+  size_t vals_len = length(tvals);
   if (vars_len < vals_len) {
     fprintf(stderr, "Too many arguments supplied\n");
     exit(1);
@@ -30,69 +30,69 @@ lisp_value_t* extend_environment(lisp_value_t* vars, lisp_value_t* vals, lisp_va
     exit(1);
   }
 
-  return cons(make_frame(vars, vals), base_env);
+  return cons(make_frame(tvars, tvals), tbase_env);
 }
 
-lisp_value_t* lookup_variable_value(lisp_value_t* var, lisp_value_t* env) {
+tlisp_value_t* lookup_variable_value(tlisp_value_t* tvar, tlisp_value_t* tenv) {
   while (1) {
-    if (env->type == lisp_null_type) break;
+    if (GET_TAG(tenv) == LISP_NULL_TYPE) break;
 
-    lisp_value_t* vars = frame_variables(first_frame(env));
-    lisp_value_t* vals = frame_values(first_frame(env));
+    tlisp_value_t* tvars = frame_variables(first_frame(tenv));
+    tlisp_value_t* tvals = frame_values(first_frame(tenv));
     while (1) {
-      if (vars->type == lisp_null_type) break;
-      if (is_eq(var, car(vars))) return car(vals);
+      if (GET_TAG(tvars) == LISP_NULL_TYPE) break;
+      if (is_eq(tvar, car(tvars))) return car(tvals);
 
-      vars = cdr(vars);
-      vals = cdr(vals);
+      tvars = cdr(tvars);
+      tvals = cdr(tvals);
     }
 
-    env = enclosing_environment(env);
+    tenv = enclosing_environment(tenv);
   }
 
-  fprintf(stderr, "Unbound variable: %s\n", var->symbol);
+  fprintf(stderr, "Unbound variable: %s\n", REM_TAG(tvar)->symbol);
   exit(1);
 }
 
-void set_variable_value(lisp_value_t* var, lisp_value_t* val, lisp_value_t* env) {
+void set_variable_value(tlisp_value_t* tvar, tlisp_value_t* tval, tlisp_value_t* tenv) {
   while (1) {
-    if (env->type == lisp_null_type) break;
+    if (GET_TAG(tenv) == LISP_NULL_TYPE) break;
 
-    lisp_value_t* vars = frame_variables(first_frame(env));
-    lisp_value_t* vals = frame_values(first_frame(env));
+    tlisp_value_t* tvars = frame_variables(first_frame(tenv));
+    tlisp_value_t* tvals = frame_values(first_frame(tenv));
     while (1) {
-      if (vars->type == lisp_null_type) break;
-      if (is_eq(var, car(vars))) {
-        set_car(vals, val);
+      if (GET_TAG(tvars) == LISP_NULL_TYPE) break;
+      if (is_eq(tvar, car(tvars))) {
+        set_car(tvals, tval);
         return;
       }
 
-      vars = cdr(vars);
-      vals = cdr(vals);
+      tvars = cdr(tvars);
+      tvals = cdr(tvals);
     }
 
-    env = enclosing_environment(env);
+    tenv = enclosing_environment(tenv);
   }
 
-  fprintf(stderr, "Unbound variable: %s\n", var->symbol);
+  fprintf(stderr, "Unbound variable: %s\n", REM_TAG(tvar)->symbol);
   exit(1);
 }
 
-void define_variable(lisp_value_t* var, lisp_value_t* val, lisp_value_t* env) {
-  lisp_value_t* frame = first_frame(env);
-  lisp_value_t* vars = frame_variables(frame);
-  lisp_value_t* vals = frame_values(frame);
+void define_variable(tlisp_value_t* tvar, tlisp_value_t* tval, tlisp_value_t* tenv) {
+  tlisp_value_t* tframe = first_frame(tenv);
+  tlisp_value_t* tvars = frame_variables(tframe);
+  tlisp_value_t* tvals = frame_values(tframe);
   while (1) {
-    if (vars->type == lisp_null_type) {
-      add_binding_to_frame(var, val, frame);
+    if (GET_TAG(tvars) == LISP_NULL_TYPE) {
+      add_binding_to_frame(tvar, tval, tframe);
       return;
     }
-    if (is_eq(var, car(vars))) {
-      set_car(vals, val);
+    if (is_eq(tvar, car(tvars))) {
+      set_car(tvals, tval);
       return;
     }
 
-    vars = cdr(vars);
-    vals = cdr(vals);
+    tvars = cdr(tvars);
+    tvals = cdr(tvals);
   }
 }

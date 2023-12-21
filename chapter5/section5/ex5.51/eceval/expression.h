@@ -3,58 +3,58 @@
 
 #include "../machine/primitives.h"
 
-bool is_self_evaluating(lisp_value_t* exp);
+bool is_self_evaluating(tlisp_value_t* texp);
 
-bool is_variable(lisp_value_t* exp);
+bool is_variable(tlisp_value_t* texp);
 
-bool is_quoted(lisp_value_t* exp);
-lisp_value_t* text_of_quotation(lisp_value_t* exp);
+bool is_quoted(tlisp_value_t* texp);
+tlisp_value_t* text_of_quotation(tlisp_value_t* texp);
 
-bool is_assignment(lisp_value_t* exp);
-lisp_value_t* assignment_variable(lisp_value_t* exp);
-lisp_value_t* assignment_value(lisp_value_t* exp);
+bool is_assignment(tlisp_value_t* texp);
+tlisp_value_t* assignment_variable(tlisp_value_t* texp);
+tlisp_value_t* assignment_value(tlisp_value_t* texp);
 
-bool is_definition(lisp_value_t* exp);
-lisp_value_t* definition_variable(lisp_value_t* exp);
-lisp_value_t* definition_value(lisp_value_t* exp);
+bool is_definition(tlisp_value_t* texp);
+tlisp_value_t* definition_variable(tlisp_value_t* texp);
+tlisp_value_t* definition_value(tlisp_value_t* texp);
 
-bool is_if(lisp_value_t* exp);
-lisp_value_t* if_predicate(lisp_value_t* exp);
-lisp_value_t* if_consequent(lisp_value_t* exp);
-lisp_value_t* if_alternative(lisp_value_t* exp);
-lisp_value_t* make_if(lisp_value_t* predicate, lisp_value_t* consequent, lisp_value_t* alternative);
+bool is_if(tlisp_value_t* texp);
+tlisp_value_t* if_predicate(tlisp_value_t* texp);
+tlisp_value_t* if_consequent(tlisp_value_t* texp);
+tlisp_value_t* if_alternative(tlisp_value_t* texp);
+tlisp_value_t* make_if(tlisp_value_t* tpredicate, tlisp_value_t* tconsequent, tlisp_value_t* talternative);
 
-bool is_lambda(lisp_value_t* exp);
-lisp_value_t* lambda_parameters(lisp_value_t* exp);
-lisp_value_t* lambda_body(lisp_value_t* exp);
-lisp_value_t* make_lambda(lisp_value_t* parameters, lisp_value_t* body);
+bool is_lambda(tlisp_value_t* texp);
+tlisp_value_t* lambda_parameters(tlisp_value_t* texp);
+tlisp_value_t* lambda_body(tlisp_value_t* texp);
+tlisp_value_t* make_lambda(tlisp_value_t* tparameters, tlisp_value_t* tbody);
 
-bool is_begin(lisp_value_t* exp);
-lisp_value_t* begin_actions(lisp_value_t* exp);
-bool is_last_exp(lisp_value_t* seq);
-lisp_value_t* first_exp(lisp_value_t* seq);
-lisp_value_t* rest_exps(lisp_value_t* seq);
-lisp_value_t* sequence_to_exp(lisp_value_t* seq);
-lisp_value_t* make_begin(lisp_value_t* seq);
+bool is_begin(tlisp_value_t* texp);
+tlisp_value_t* begin_actions(tlisp_value_t* texp);
+bool is_last_exp(tlisp_value_t* tseq);
+tlisp_value_t* first_exp(tlisp_value_t* tseq);
+tlisp_value_t* rest_exps(tlisp_value_t* tseq);
+tlisp_value_t* sequence_to_exp(tlisp_value_t* tseq);
+tlisp_value_t* make_begin(tlisp_value_t* tseq);
 
-bool is_cond(lisp_value_t* exp);
-lisp_value_t* cond_clauses(lisp_value_t* exp);
-bool is_cond_else_clause(lisp_value_t* clause);
-lisp_value_t* cond_predicate(lisp_value_t* clause);
-lisp_value_t* cond_actions(lisp_value_t* clause);
-lisp_value_t* cond_to_if(lisp_value_t* exp);
-lisp_value_t* expand_clauses(lisp_value_t* clauses);
+bool is_cond(tlisp_value_t* texp);
+tlisp_value_t* cond_clauses(tlisp_value_t* texp);
+bool is_cond_else_clause(tlisp_value_t* tclause);
+tlisp_value_t* cond_predicate(tlisp_value_t* tclause);
+tlisp_value_t* cond_actions(tlisp_value_t* tclause);
+tlisp_value_t* cond_to_if(tlisp_value_t* texp);
+tlisp_value_t* expand_clauses(tlisp_value_t* tclauses);
 
-bool is_let(lisp_value_t* exp);
-lisp_value_t* let_binds(lisp_value_t* exp);
-lisp_value_t* let_body(lisp_value_t* exp);
-lisp_value_t* let_to_combination(lisp_value_t* exp);
+bool is_let(tlisp_value_t* texp);
+tlisp_value_t* let_binds(tlisp_value_t* texp);
+tlisp_value_t* let_body(tlisp_value_t* texp);
+tlisp_value_t* let_to_combination(tlisp_value_t* texp);
 
-bool is_application(lisp_value_t* exp);
-lisp_value_t* operator(lisp_value_t* exp);
-lisp_value_t* operands(lisp_value_t* exp);
-bool is_no_operands(lisp_value_t* ops);
-lisp_value_t* first_operand(lisp_value_t* ops);
-lisp_value_t* rest_operands(lisp_value_t* ops);
+bool is_application(tlisp_value_t* texp);
+tlisp_value_t* operator(tlisp_value_t* texp);
+tlisp_value_t* operands(tlisp_value_t* texp);
+bool is_no_operands(tlisp_value_t* tops);
+tlisp_value_t* first_operand(tlisp_value_t* tops);
+tlisp_value_t* rest_operands(tlisp_value_t* tops);
 
 #endif

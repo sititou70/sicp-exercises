@@ -5,11 +5,11 @@
 
 #define STACK_SIZE 256
 
-extern lisp_value_t* stack[];
+extern tlisp_value_t* stack[];
 extern size_t stack_index;
 
-void push_stack(lisp_value_t* value);
-lisp_value_t* pop_stack();
+void push_stack(tlisp_value_t* tvalue);
+tlisp_value_t* pop_stack();
 void init_stack();
 
 #endif

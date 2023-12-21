@@ -51,17 +51,17 @@ void* eval_dispatch(void) {
 
 void* ev_self_eval(void) {
   assign(reg_val, reg_exp);
-  goto(reg_continue->internal_label);
+  goto(REM_TAG(reg_continue)->internal_label);
 }
 
 void* ev_variable(void) {
   assign(reg_val, lookup_variable_value(reg_exp, reg_env));
-  goto(reg_continue->internal_label);
+  goto(REM_TAG(reg_continue)->internal_label);
 }
 
 void* ev_quoted(void) {
   assign(reg_val, text_of_quotation(reg_exp));
-  goto(reg_continue->internal_label);
+  goto(REM_TAG(reg_continue)->internal_label);
 }
 
 void* ev_assignment(void) {
@@ -79,7 +79,7 @@ void* ev_assignment_1(void) {
   restore(reg_unev);
   perform(set_variable_value(reg_unev, reg_val, reg_env));
   assign(reg_val, list(make_symbol("quote"), make_symbol("ok")));
-  goto(reg_continue->internal_label);
+  goto(REM_TAG(reg_continue)->internal_label);
 }
 
 void* ev_definition(void) {
@@ -97,7 +97,7 @@ void* ev_definition_1(void) {
   restore(reg_unev);
   perform(define_variable(reg_unev, reg_val, reg_env));
   assign(reg_val, list(make_symbol("quote"), make_symbol("ok")));
-  goto(reg_continue->internal_label);
+  goto(REM_TAG(reg_continue)->internal_label);
 }
 
 void* ev_if(void) {
@@ -129,7 +129,7 @@ void* ev_lambda(void) {
   assign(reg_unev, lambda_parameters(reg_exp));
   assign(reg_exp, lambda_body(reg_exp));
   assign(reg_val, make_procedure(reg_unev, reg_exp, reg_env));
-  goto(reg_continue->internal_label);
+  goto(REM_TAG(reg_continue)->internal_label);
 }
 
 void* ev_begin(void) {
@@ -229,7 +229,7 @@ void* apply_dispatch(void) {
 void* primitive_apply(void) {
   assign(reg_val, apply_primitive_procedure(reg_proc, reg_argl));
   restore(reg_continue);
-  goto(reg_continue->internal_label);
+  goto(REM_TAG(reg_continue)->internal_label);
 }
 
 void* compound_apply(void) {
@@ -251,17 +251,17 @@ void* unknown_procedure_type(void) {
 }
 
 // eval-apply utils
-bool is_true(lisp_value_t* val) { return !is_false(val); }
-bool is_false(lisp_value_t* val) { return val->type == lisp_null_type; }
+bool is_true(tlisp_value_t* tval) { return !is_false(tval); }
+bool is_false(tlisp_value_t* tval) { return GET_TAG(tval) == LISP_NULL_TYPE; }
 
-lisp_value_t* get_empty_arglist() { return make_null(); }
-lisp_value_t* adjoin_arg(lisp_value_t* arg, lisp_value_t* arglist) { return append(arglist, list(arg)); }
+tlisp_value_t* get_empty_arglist() { return make_null(); }
+tlisp_value_t* adjoin_arg(tlisp_value_t* targ, tlisp_value_t* targlist) { return append(targlist, list(targ)); }
 
-bool is_last_operand(lisp_value_t* ops) { return cdr(ops)->type == lisp_null_type; }
+bool is_last_operand(tlisp_value_t* tops) { return GET_TAG(cdr(tops)) == LISP_NULL_TYPE; }
 
-lisp_value_t* eval(lisp_value_t* exp) {
+tlisp_value_t* eval(tlisp_value_t* texp) {
   init_stack();
-  reg_exp = exp;
+  reg_exp = texp;
   reg_env = get_global_environment();
   reg_continue = make_internal_label(NULL);
 

@@ -6,127 +6,128 @@
 #include "registers.h"
 #include "stack.h"
 
-lisp_value_t *cons(lisp_value_t *car_val, lisp_value_t *cdr_val) {
+tlisp_value_t *cons(tlisp_value_t *car_tval, tlisp_value_t *cdr_tval) {
   lisp_value_t *val = (lisp_value_t *)malloc(sizeof(lisp_value_t));
-  val->type = lisp_pair_type;
-  val->car = car_val;
-  val->cdr = cdr_val;
+  val->car = car_tval;
+  val->cdr = cdr_tval;
 
-  gc_register(val);
+  tlisp_value_t *tagged_val = ADD_TAG(val, LISP_PAIR_TYPE);
 
-  return val;
+  gc_register(tagged_val);
+
+  return tagged_val;
 }
-lisp_value_t *car(lisp_value_t *val) {
-  if (val->type != lisp_pair_type) {
+tlisp_value_t *car(tlisp_value_t *tval) {
+  if (GET_TAG(tval) != LISP_PAIR_TYPE) {
     fprintf(stderr, "car: val must be pair.\n");
     exit(1);
   }
 
-  return val->car;
+  return REM_TAG(tval)->car;
 }
-lisp_value_t *cdr(lisp_value_t *val) {
-  if (val->type != lisp_pair_type) {
+tlisp_value_t *cdr(tlisp_value_t *tval) {
+  if (GET_TAG(tval) != LISP_PAIR_TYPE) {
     fprintf(stderr, "cdr: val must be pair.\n");
     exit(1);
   }
 
-  return val->cdr;
+  return REM_TAG(tval)->cdr;
 }
-void set_car(lisp_value_t *target, lisp_value_t *val) {
-  if (target->type != lisp_pair_type) {
+void set_car(tlisp_value_t *tpair, tlisp_value_t *tval) {
+  if (GET_TAG(tpair) != LISP_PAIR_TYPE) {
     fprintf(stderr, "set_car: target must be pair.\n");
     exit(1);
   }
 
-  target->car = val;
+  REM_TAG(tpair)->car = tval;
 
   return;
 }
-void set_cdr(lisp_value_t *target, lisp_value_t *val) {
-  if (target->type != lisp_pair_type) {
+void set_cdr(tlisp_value_t *tpair, tlisp_value_t *tval) {
+  if (GET_TAG(tpair) != LISP_PAIR_TYPE) {
     fprintf(stderr, "set_cdr: target must be pair.\n");
     exit(1);
   }
 
-  target->cdr = val;
+  REM_TAG(tpair)->cdr = tval;
 
   return;
 }
 
-lisp_value_t *make_number(double num) {
+tlisp_value_t *make_number(double num) {
   lisp_value_t *val = (lisp_value_t *)malloc(sizeof(lisp_value_t));
-  val->type = lisp_number_type;
   val->number = num;
 
-  gc_register(val);
+  tlisp_value_t *tagged_val = ADD_TAG(val, LISP_NUMBER_TYPE);
+  gc_register(tagged_val);
 
-  return val;
+  return tagged_val;
 }
-lisp_value_t *make_symbol(char *str) {
+tlisp_value_t *make_symbol(char *str) {
   char *symbol = malloc(sizeof(char) * (strlen(str) + 1));
   strcpy(symbol, str);
 
   lisp_value_t *val = (lisp_value_t *)malloc(sizeof(lisp_value_t));
-  val->type = lisp_symbol_type;
   val->symbol = symbol;
 
-  gc_register(val);
+  tlisp_value_t *tagged_val = ADD_TAG(val, LISP_SYMBOL_TYPE);
+  gc_register(tagged_val);
 
-  return val;
+  return tagged_val;
 }
 // len: null文字を含まない文字列の長さ
-lisp_value_t *make_symbol_with_len(char *str, size_t len) {
+tlisp_value_t *make_symbol_with_len(char *str, size_t len) {
   char *symbol = malloc(sizeof(char) * (len + 1));
   memcpy(symbol, str, len);
   symbol[len] = '\0';
 
   lisp_value_t *val = (lisp_value_t *)malloc(sizeof(lisp_value_t));
-  val->type = lisp_symbol_type;
   val->symbol = symbol;
 
-  gc_register(val);
+  tlisp_value_t *tagged_val = ADD_TAG(val, LISP_SYMBOL_TYPE);
+  gc_register(tagged_val);
 
-  return val;
+  return tagged_val;
 }
-lisp_value_t *make_null() {
+tlisp_value_t *make_null() {
   lisp_value_t *val = (lisp_value_t *)malloc(sizeof(lisp_value_t));
-  val->type = lisp_null_type;
 
-  gc_register(val);
+  tlisp_value_t *tagged_val = ADD_TAG(val, LISP_NULL_TYPE);
+  gc_register(tagged_val);
 
-  return val;
+  return tagged_val;
 }
-lisp_value_t *make_internal_primitive_procedure(lisp_value_t *(*proc)(lisp_value_t *)) {
+tlisp_value_t *make_internal_primitive_procedure(tlisp_value_t *(*proc)(tlisp_value_t *)) {
   lisp_value_t *val = (lisp_value_t *)malloc(sizeof(lisp_value_t));
-  val->type = lisp_internal_primitive_procedure_type;
   val->internal_primitive_procedure = proc;
 
-  gc_register(val);
+  tlisp_value_t *tagged_val = ADD_TAG(val, LISP_INTERNAL_PRIMITIVE_PROCEDURE_TYPE);
+  gc_register(tagged_val);
 
-  return val;
+  return tagged_val;
 }
-lisp_value_t *make_internal_label(void *(*label)(void)) {
+tlisp_value_t *make_internal_label(void *(*label)(void)) {
   lisp_value_t *val = (lisp_value_t *)malloc(sizeof(lisp_value_t));
-  val->type = lisp_internal_label_type;
   val->internal_label = label;
 
-  gc_register(val);
+  tlisp_value_t *tagged_val = ADD_TAG(val, LISP_INTERNAL_LABEL_TYPE);
+  gc_register(tagged_val);
 
-  return val;
+  return tagged_val;
 }
 
 // ################
 // # gc
 // ################
-lisp_value_t *gc_table[GC_TABLE_SIZE] = {};
+tlisp_value_t *gc_table[GC_TABLE_SIZE] = {};
 // 次の空き領域を表す
 size_t gc_table_index = 0;
 int gc_obj_count = 0;
 bool gc_silent_mode = false;
 
 // gcにlisp_valueを登録する
-void gc_register(lisp_value_t *val) {
-  gc_table[gc_table_index] = val;
+void gc_register(tlisp_value_t *tval) {
+  gc_table[gc_table_index] = tval;
   move_gc_index_to_next();
   gc_obj_count++;
 }
@@ -137,7 +138,7 @@ void gc_register(lisp_value_t *val) {
 #define GC_MEMORY_HIGH 0.7
 void gc_check() {
   if (gc_obj_count / (double)GC_TABLE_SIZE > GC_MEMORY_HIGH) {
-    gc((lisp_value_t *[]){reg_exp, reg_env, reg_val, reg_proc, reg_argl, reg_continue, reg_unev}, 7, stack,
+    gc((tlisp_value_t *[]){reg_exp, reg_env, reg_val, reg_proc, reg_argl, reg_continue, reg_unev}, 7, stack,
        stack_index);
     if (gc_table_index == GC_TABLE_SIZE) {
       fprintf(stderr, "gc_check: gc tried but could not allocate free memory.\n");
@@ -146,12 +147,12 @@ void gc_check() {
   }
 }
 
-void gc(lisp_value_t **registers, size_t registers_len, lisp_value_t **stack, size_t stack_len) {
+void gc(tlisp_value_t **registers, size_t registers_len, tlisp_value_t **stack, size_t stack_len) {
   if (!gc_silent_mode) printf("gc: start...");
 
   reset_should_mark();
   for (size_t i = 0; i < GC_TABLE_SIZE; i++) {
-    if (gc_table[i] != NULL) gc_table[i]->gc_mark = false;
+    if (gc_table[i] != NULL) REM_TAG(gc_table[i])->gc_mark = false;
   }
 
   // mark
@@ -162,21 +163,22 @@ void gc(lisp_value_t **registers, size_t registers_len, lisp_value_t **stack, si
     if (stack[i] != NULL) push_should_mark(stack[i]);
   }
   while (1) {
-    lisp_value_t *target = pop_should_mark();
-    if (target == NULL) break;
+    tlisp_value_t *tmarking_target = pop_should_mark();
+    if (tmarking_target == NULL) break;
 
-    if (!target->gc_mark) {
-      target->gc_mark = true;
-      if (target->type == lisp_pair_type) {
-        push_should_mark(target->car);
-        push_should_mark(target->cdr);
+    lisp_value_t *marking_target = REM_TAG(tmarking_target);
+    if (!marking_target->gc_mark) {
+      marking_target->gc_mark = true;
+      if (GET_TAG(tmarking_target) == LISP_PAIR_TYPE) {
+        push_should_mark(marking_target->car);
+        push_should_mark(marking_target->cdr);
       }
     }
   }
 
   // sweep
   for (size_t i = 0; i < GC_TABLE_SIZE; i++) {
-    if (gc_table[i] != NULL && !gc_table[i]->gc_mark) {
+    if (gc_table[i] != NULL && !REM_TAG(gc_table[i])->gc_mark) {
       free_lisp_value(gc_table[i]);
       gc_table[i] = NULL;
       gc_obj_count--;
@@ -191,20 +193,20 @@ void gc(lisp_value_t **registers, size_t registers_len, lisp_value_t **stack, si
 }
 
 // should mark stack
-lisp_value_t *should_mark[GC_TABLE_SIZE + STACK_SIZE] = {};
+tlisp_value_t *should_mark[GC_TABLE_SIZE + STACK_SIZE] = {};
 // 次の空き領域、または空きがない（= GC_TABLE_SIZE + STACK_SIZE）状態を表す
 size_t should_mark_index = 0;
-void push_should_mark(lisp_value_t *val) {
+void push_should_mark(tlisp_value_t *tval) {
   if (should_mark_index == GC_TABLE_SIZE + STACK_SIZE) {
     fprintf(stderr, "push_should_mark: no free workspaces. gc failed.\n");
     exit(1);
   }
 
-  should_mark[should_mark_index] = val;
+  should_mark[should_mark_index] = tval;
   should_mark_index++;
   return;
 }
-lisp_value_t *pop_should_mark() {
+tlisp_value_t *pop_should_mark() {
   if (should_mark_index == 0) {
     return NULL;
   }
@@ -218,9 +220,10 @@ void reset_should_mark() {
 }
 
 // 単一のlisp_valueをfreeする。それがpairであっても再帰的にはfreeしない
-void free_lisp_value(lisp_value_t *val) {
-  switch (val->type) {
-    case lisp_symbol_type:
+void free_lisp_value(tlisp_value_t *tval) {
+  lisp_value_t *val = REM_TAG(tval);
+  switch (GET_TAG(tval)) {
+    case LISP_SYMBOL_TYPE:
       free(val->symbol);
       free(val);
       break;

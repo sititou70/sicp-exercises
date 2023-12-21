@@ -3,9 +3,9 @@
 #include <stdbool.h>
 #include <string.h>
 
-bool tagged_list(lisp_value_t* exp, char* tag) {
-  if (exp->type != lisp_pair_type) return false;
-  if (car(exp)->type != lisp_symbol_type) return false;
-  if (strcmp(car(exp)->symbol, tag) != 0) return false;
+bool tagged_list(tlisp_value_t* texp, char* tag) {
+  if (GET_TAG(texp) != LISP_PAIR_TYPE) return false;
+  if (GET_TAG(car(texp)) != LISP_SYMBOL_TYPE) return false;
+  if (strcmp(REM_TAG(car(texp))->symbol, tag) != 0) return false;
   return true;
 }

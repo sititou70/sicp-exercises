@@ -34,14 +34,14 @@ void* compound_apply(void);
 void* unknown_expression_type(void);
 void* unknown_procedure_type(void);
 
-bool is_true(lisp_value_t* val);
-bool is_false(lisp_value_t* val);
+bool is_true(tlisp_value_t* tval);
+bool is_false(tlisp_value_t* tval);
 
-lisp_value_t* get_empty_arglist();
-lisp_value_t* adjoin_arg(lisp_value_t* arg, lisp_value_t* arglist);
+tlisp_value_t* get_empty_arglist();
+tlisp_value_t* adjoin_arg(tlisp_value_t* targ, tlisp_value_t* targlist);
 
-bool is_last_operand(lisp_value_t* ops);
+bool is_last_operand(tlisp_value_t* tops);
 
-lisp_value_t* eval(lisp_value_t* exp);
+tlisp_value_t* eval(tlisp_value_t* texp);
 
 #endif

@@ -25,21 +25,21 @@
 // [compiled code here]
 
 // utils
-bool is_true(lisp_value_t *val) { return !is_false(val); }
-bool is_false(lisp_value_t *val) { return val->type == lisp_null_type; }
+bool is_true(tlisp_value_t* tval) { return !is_false(tval); }
+bool is_false(tlisp_value_t* tval) { return GET_TAG(tval) == LISP_NULL_TYPE; }
 
-lisp_value_t *get_empty_arglist() { return make_null(); }
-lisp_value_t *adjoin_arg(lisp_value_t *arg, lisp_value_t *arglist) { return append(arglist, list(arg)); }
+tlisp_value_t* get_empty_arglist() { return make_null(); }
+tlisp_value_t* adjoin_arg(tlisp_value_t* targ, tlisp_value_t* targlist) { return append(targlist, list(targ)); }
 
-bool is_last_operand(lisp_value_t *ops) { return cdr(ops)->type == lisp_null_type; }
+bool is_last_operand(tlisp_value_t* tops) { return GET_TAG(cdr(tops)) == LISP_NULL_TYPE; }
 
-int main(int argc, char *argv[]) {
+int main(int argc, char* argv[]) {
   register_argv(argv);
   init_stack();
   reg_env = get_global_environment();
   reg_continue = make_internal_label(NULL);
 
-  void *(*next_label)() = compiled_entry;
+  void* (*next_label)() = compiled_entry;
 
   while (next_label != NULL) {
     next_label = next_label();

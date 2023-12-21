@@ -49,7 +49,7 @@ bool is_numeric_char(char c) {
   if (c == '.') return true;
   return false;
 }
-char* parse_number(char* s, lisp_value_t** result) {
+char* parse_number(char* s, tlisp_value_t** result) {
   char* next = NULL;
   errno = 0;
   double d = strtod(s, &next);
@@ -64,10 +64,10 @@ char* parse_number(char* s, lisp_value_t** result) {
 }
 
 // quote
-char* parse_quote(char* s, lisp_value_t** result) {
+char* parse_quote(char* s, tlisp_value_t** result) {
   s++;
 
-  lisp_value_t* content = NULL;
+  tlisp_value_t* content = NULL;
   s = parse_lisp_value(s, &content);
   if (content == NULL) {
     fprintf(stderr, "quote: no content\n");
@@ -80,18 +80,18 @@ char* parse_quote(char* s, lisp_value_t** result) {
 }
 
 // list: ([separators][lisp value][separators][lisp value]...[separators])
-char* parse_list(char* s, lisp_value_t** result) {
+char* parse_list(char* s, tlisp_value_t** result) {
   // "([separators]" を消費
   s++;
   s = skip_separators(s);
 
   // "[lisp value][separators]..." をパース
-  lisp_value_t* contents[LIST_BUF_SIZE] = {};
+  tlisp_value_t* contents[LIST_BUF_SIZE] = {};
   int content_num = 0;
   while (1) {
     if (*s == ')') break;
 
-    lisp_value_t* content = NULL;
+    tlisp_value_t* content = NULL;
     s = parse_lisp_value(s, &content);
     s = skip_separators(s);
 
@@ -121,7 +121,7 @@ bool is_symbol_char(char c) {
   if (c == '\'') return false;
   return true;
 }
-char* parse_symbol(char* s, lisp_value_t** result) {
+char* parse_symbol(char* s, tlisp_value_t** result) {
   char* next = s;
   while (1) {
     if (!is_symbol_char(*next)) break;
@@ -134,7 +134,7 @@ char* parse_symbol(char* s, lisp_value_t** result) {
 }
 
 // main
-char* parse_lisp_value(char* s, lisp_value_t** result) {
+char* parse_lisp_value(char* s, tlisp_value_t** result) {
   s = skip_separators(s);
 
   if (*s == '\0') return s;

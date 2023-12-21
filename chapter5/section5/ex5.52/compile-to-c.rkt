@@ -146,32 +146,13 @@
   (print-goto statement)
   (display "goto(")
 
-  (define 
-    (register-symbol? sym)
-    (cond 
-      ((eq? sym 'exp) true)
-      ((eq? sym 'env) true)
-      ((eq? sym 'val) true)
-      ((eq? sym 'proc) true)
-      ((eq? sym 'argl) true)
-      ((eq? sym 'continue) true)
-      ((eq? sym 'unev) true)
-      (else false)
-    )
-  )
-
   ; operand: (reg ...) | (label ...)
   (define operand (cadr statement))
   (cond 
     ((eq? (car operand) 'reg)
-     (display "reg_")
-     (if (register-symbol? (cadr operand)) 
-       (begin 
-         (display (cadr operand))
-         (display "->internal_label")
-       )
-       (display (cadr operand))
-     )
+     (display "REM_TAG(reg_")
+     (display (cadr operand))
+     (display ")->internal_label")
     )
     ((eq? (car operand) 'label)
      (display (cadr operand))

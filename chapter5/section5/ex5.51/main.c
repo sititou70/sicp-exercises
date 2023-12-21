@@ -29,7 +29,7 @@ int main(int argc, char* argv[]) {
     input_buffer[statBuf.st_size] = '\0';
     fread(input_buffer, sizeof(char), statBuf.st_size, file);
 
-    lisp_value_t* parse_result = NULL;
+    tlisp_value_t* parse_result = NULL;
     char* input = input_buffer;
 
     // racketの#langショートハンドを飛ばす
@@ -55,7 +55,7 @@ int main(int argc, char* argv[]) {
 
   // repl
   char input_buffer[BUF_SIZE] = {};
-  lisp_value_t* parse_result = NULL;
+  tlisp_value_t* parse_result = NULL;
   while (1) {
     printf("> ");
     fflush(stdout);

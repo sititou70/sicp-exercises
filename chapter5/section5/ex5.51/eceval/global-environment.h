@@ -3,6 +3,6 @@
 
 #include "../machine/primitives.h"
 
-lisp_value_t* get_global_environment();
+tlisp_value_t* get_global_environment();
 
 #endif

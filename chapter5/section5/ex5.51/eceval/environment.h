@@ -3,20 +3,20 @@
 
 #include "../machine/primitives.h"
 
-lisp_value_t* enclosing_environment(lisp_value_t* env);
-lisp_value_t* first_frame(lisp_value_t* env);
+tlisp_value_t* enclosing_environment(tlisp_value_t* tenv);
+tlisp_value_t* first_frame(tlisp_value_t* tenv);
 
-lisp_value_t* make_frame(lisp_value_t* variables, lisp_value_t* values);
-lisp_value_t* frame_variables(lisp_value_t* frame);
-lisp_value_t* frame_values(lisp_value_t* frame);
-void add_binding_to_frame(lisp_value_t* var, lisp_value_t* val, lisp_value_t* frame);
+tlisp_value_t* make_frame(tlisp_value_t* tvariables, tlisp_value_t* tvalues);
+tlisp_value_t* frame_variables(tlisp_value_t* tframe);
+tlisp_value_t* frame_values(tlisp_value_t* tframe);
+void add_binding_to_frame(tlisp_value_t* tvar, tlisp_value_t* tval, tlisp_value_t* tframe);
 
-lisp_value_t* extend_environment(lisp_value_t* vars, lisp_value_t* vals, lisp_value_t* base_env);
+tlisp_value_t* extend_environment(tlisp_value_t* tvars, tlisp_value_t* tvals, tlisp_value_t* tbase_env);
 
-lisp_value_t* lookup_variable_value(lisp_value_t* var, lisp_value_t* env);
+tlisp_value_t* lookup_variable_value(tlisp_value_t* tvar, tlisp_value_t* tenv);
 
-void set_variable_value(lisp_value_t* var, lisp_value_t* val, lisp_value_t* env);
+void set_variable_value(tlisp_value_t* tvar, tlisp_value_t* tval, tlisp_value_t* tenv);
 
-void define_variable(lisp_value_t* var, lisp_value_t* val, lisp_value_t* env);
+void define_variable(tlisp_value_t* tvar, tlisp_value_t* tval, tlisp_value_t* tenv);
 
 #endif

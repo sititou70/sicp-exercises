@@ -5,43 +5,43 @@
 
 #include "primitives.h"
 
-#define list(...) list_from_values((lisp_value_t *[]){__VA_ARGS__, NULL})
-lisp_value_t *list_from_values(lisp_value_t **values);
-bool is_eq(lisp_value_t *v1, lisp_value_t *v2);
-size_t length(lisp_value_t *list);
-lisp_value_t *map(lisp_value_t *(*proc)(lisp_value_t *), lisp_value_t *list);
-lisp_value_t *append(lisp_value_t *list1, lisp_value_t *list2);
+#define list(...) list_from_values((tlisp_value_t *[]){__VA_ARGS__, NULL})
+tlisp_value_t *list_from_values(tlisp_value_t **tvalues);
+bool is_eq(tlisp_value_t *tv1, tlisp_value_t *tv2);
+size_t length(tlisp_value_t *tlist);
+tlisp_value_t *map(tlisp_value_t *(*tproc)(tlisp_value_t *), tlisp_value_t *tlist);
+tlisp_value_t *append(tlisp_value_t *tlist1, tlisp_value_t *tlist2);
 
 // carcdring
-lisp_value_t *caar(lisp_value_t *pair);
-lisp_value_t *cadr(lisp_value_t *pair);
-lisp_value_t *cdar(lisp_value_t *pair);
-lisp_value_t *cddr(lisp_value_t *pair);
+tlisp_value_t *caar(tlisp_value_t *tpair);
+tlisp_value_t *cadr(tlisp_value_t *tpair);
+tlisp_value_t *cdar(tlisp_value_t *tpair);
+tlisp_value_t *cddr(tlisp_value_t *tpair);
 
-lisp_value_t *caaar(lisp_value_t *pair);
-lisp_value_t *caadr(lisp_value_t *pair);
-lisp_value_t *cadar(lisp_value_t *pair);
-lisp_value_t *caddr(lisp_value_t *pair);
-lisp_value_t *cdaar(lisp_value_t *pair);
-lisp_value_t *cdadr(lisp_value_t *pair);
-lisp_value_t *cddar(lisp_value_t *pair);
-lisp_value_t *cdddr(lisp_value_t *pair);
+tlisp_value_t *caaar(tlisp_value_t *tpair);
+tlisp_value_t *caadr(tlisp_value_t *tpair);
+tlisp_value_t *cadar(tlisp_value_t *tpair);
+tlisp_value_t *caddr(tlisp_value_t *tpair);
+tlisp_value_t *cdaar(tlisp_value_t *tpair);
+tlisp_value_t *cdadr(tlisp_value_t *tpair);
+tlisp_value_t *cddar(tlisp_value_t *tpair);
+tlisp_value_t *cdddr(tlisp_value_t *tpair);
 
-lisp_value_t *caaaar(lisp_value_t *pair);
-lisp_value_t *caaadr(lisp_value_t *pair);
-lisp_value_t *caadar(lisp_value_t *pair);
-lisp_value_t *caaddr(lisp_value_t *pair);
-lisp_value_t *cadaar(lisp_value_t *pair);
-lisp_value_t *cadadr(lisp_value_t *pair);
-lisp_value_t *caddar(lisp_value_t *pair);
-lisp_value_t *cadddr(lisp_value_t *pair);
-lisp_value_t *cdaaar(lisp_value_t *pair);
-lisp_value_t *cdaadr(lisp_value_t *pair);
-lisp_value_t *cdadar(lisp_value_t *pair);
-lisp_value_t *cdaddr(lisp_value_t *pair);
-lisp_value_t *cddaar(lisp_value_t *pair);
-lisp_value_t *cddadr(lisp_value_t *pair);
-lisp_value_t *cdddar(lisp_value_t *pair);
-lisp_value_t *cddddr(lisp_value_t *pair);
+tlisp_value_t *caaaar(tlisp_value_t *tpair);
+tlisp_value_t *caaadr(tlisp_value_t *tpair);
+tlisp_value_t *caadar(tlisp_value_t *tpair);
+tlisp_value_t *caaddr(tlisp_value_t *tpair);
+tlisp_value_t *cadaar(tlisp_value_t *tpair);
+tlisp_value_t *cadadr(tlisp_value_t *tpair);
+tlisp_value_t *caddar(tlisp_value_t *tpair);
+tlisp_value_t *cadddr(tlisp_value_t *tpair);
+tlisp_value_t *cdaaar(tlisp_value_t *tpair);
+tlisp_value_t *cdaadr(tlisp_value_t *tpair);
+tlisp_value_t *cdadar(tlisp_value_t *tpair);
+tlisp_value_t *cdaddr(tlisp_value_t *tpair);
+tlisp_value_t *cddaar(tlisp_value_t *tpair);
+tlisp_value_t *cddadr(tlisp_value_t *tpair);
+tlisp_value_t *cdddar(tlisp_value_t *tpair);
+tlisp_value_t *cddddr(tlisp_value_t *tpair);
 
 #endif

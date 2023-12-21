@@ -10,104 +10,110 @@
 #include "tag.h"
 
 // primitive procedure
-bool is_primitive_procedure(lisp_value_t* proc) { return tagged_list(proc, "primitive"); }
-lisp_value_t* primitive_implementation(lisp_value_t* proc) { return cadr(proc); }
+bool is_primitive_procedure(tlisp_value_t* tproc) { return tagged_list(tproc, "primitive"); }
+tlisp_value_t* primitive_implementation(tlisp_value_t* tproc) { return cadr(tproc); }
 
 //// primitive base apply
-lisp_value_t* primitive_base_apply(lisp_value_t* args) { return car(args)->internal_primitive_procedure(cadr(args)); }
+tlisp_value_t* primitive_base_apply(tlisp_value_t* targs) {
+  return REM_TAG(car(targs))->internal_primitive_procedure(cadr(targs));
+}
 
 //// pair
-lisp_value_t* primitive_car(lisp_value_t* args) { return car(car(args)); }
-lisp_value_t* primitive_cdr(lisp_value_t* args) { return cdr(car(args)); }
-lisp_value_t* primitive_cons(lisp_value_t* args) { return cons(car(args), cadr(args)); }
-lisp_value_t* primitive_set_car(lisp_value_t* args) {
-  set_car(car(args), cadr(args));
+tlisp_value_t* primitive_car(tlisp_value_t* targs) { return car(car(targs)); }
+tlisp_value_t* primitive_cdr(tlisp_value_t* targs) { return cdr(car(targs)); }
+tlisp_value_t* primitive_cons(tlisp_value_t* targs) { return cons(car(targs), cadr(targs)); }
+tlisp_value_t* primitive_set_car(tlisp_value_t* targs) {
+  set_car(car(targs), cadr(targs));
   return make_null();
 }
-lisp_value_t* primitive_set_cdr(lisp_value_t* args) {
-  set_cdr(car(args), cadr(args));
+tlisp_value_t* primitive_set_cdr(tlisp_value_t* targs) {
+  set_cdr(car(targs), cadr(targs));
   return make_null();
 }
-lisp_value_t* primitive_is_pair(lisp_value_t* args) {
-  if (car(args)->type == lisp_pair_type) return make_symbol("true");
+tlisp_value_t* primitive_is_pair(tlisp_value_t* targs) {
+  if (GET_TAG(car(targs)) == LISP_PAIR_TYPE) return make_symbol("true");
   return make_null();
 }
 ////// carcdring
-lisp_value_t* primitive_caar(lisp_value_t* args) { return caar(car(args)); }
-lisp_value_t* primitive_cadr(lisp_value_t* args) { return cadr(car(args)); }
-lisp_value_t* primitive_cdar(lisp_value_t* args) { return cdar(car(args)); }
-lisp_value_t* primitive_cddr(lisp_value_t* args) { return cddr(car(args)); }
-lisp_value_t* primitive_caaar(lisp_value_t* args) { return caaar(car(args)); }
-lisp_value_t* primitive_caadr(lisp_value_t* args) { return caadr(car(args)); }
-lisp_value_t* primitive_cadar(lisp_value_t* args) { return cadar(car(args)); }
-lisp_value_t* primitive_caddr(lisp_value_t* args) { return caddr(car(args)); }
-lisp_value_t* primitive_cdaar(lisp_value_t* args) { return cdaar(car(args)); }
-lisp_value_t* primitive_cdadr(lisp_value_t* args) { return cdadr(car(args)); }
-lisp_value_t* primitive_cddar(lisp_value_t* args) { return cddar(car(args)); }
-lisp_value_t* primitive_cdddr(lisp_value_t* args) { return cdddr(car(args)); }
-lisp_value_t* primitive_caaaar(lisp_value_t* args) { return caaaar(car(args)); }
-lisp_value_t* primitive_caaadr(lisp_value_t* args) { return caaadr(car(args)); }
-lisp_value_t* primitive_caadar(lisp_value_t* args) { return caadar(car(args)); }
-lisp_value_t* primitive_caaddr(lisp_value_t* args) { return caaddr(car(args)); }
-lisp_value_t* primitive_cadaar(lisp_value_t* args) { return cadaar(car(args)); }
-lisp_value_t* primitive_cadadr(lisp_value_t* args) { return cadadr(car(args)); }
-lisp_value_t* primitive_caddar(lisp_value_t* args) { return caddar(car(args)); }
-lisp_value_t* primitive_cadddr(lisp_value_t* args) { return cadddr(car(args)); }
-lisp_value_t* primitive_cdaaar(lisp_value_t* args) { return cdaaar(car(args)); }
-lisp_value_t* primitive_cdaadr(lisp_value_t* args) { return cdaadr(car(args)); }
-lisp_value_t* primitive_cdadar(lisp_value_t* args) { return cdadar(car(args)); }
-lisp_value_t* primitive_cdaddr(lisp_value_t* args) { return cdaddr(car(args)); }
-lisp_value_t* primitive_cddaar(lisp_value_t* args) { return cddaar(car(args)); }
-lisp_value_t* primitive_cddadr(lisp_value_t* args) { return cddadr(car(args)); }
-lisp_value_t* primitive_cdddar(lisp_value_t* args) { return cdddar(car(args)); }
-lisp_value_t* primitive_cddddr(lisp_value_t* args) { return cddddr(car(args)); }
+tlisp_value_t* primitive_caar(tlisp_value_t* targs) { return caar(car(targs)); }
+tlisp_value_t* primitive_cadr(tlisp_value_t* targs) { return cadr(car(targs)); }
+tlisp_value_t* primitive_cdar(tlisp_value_t* targs) { return cdar(car(targs)); }
+tlisp_value_t* primitive_cddr(tlisp_value_t* targs) { return cddr(car(targs)); }
+tlisp_value_t* primitive_caaar(tlisp_value_t* targs) { return caaar(car(targs)); }
+tlisp_value_t* primitive_caadr(tlisp_value_t* targs) { return caadr(car(targs)); }
+tlisp_value_t* primitive_cadar(tlisp_value_t* targs) { return cadar(car(targs)); }
+tlisp_value_t* primitive_caddr(tlisp_value_t* targs) { return caddr(car(targs)); }
+tlisp_value_t* primitive_cdaar(tlisp_value_t* targs) { return cdaar(car(targs)); }
+tlisp_value_t* primitive_cdadr(tlisp_value_t* targs) { return cdadr(car(targs)); }
+tlisp_value_t* primitive_cddar(tlisp_value_t* targs) { return cddar(car(targs)); }
+tlisp_value_t* primitive_cdddr(tlisp_value_t* targs) { return cdddr(car(targs)); }
+tlisp_value_t* primitive_caaaar(tlisp_value_t* targs) { return caaaar(car(targs)); }
+tlisp_value_t* primitive_caaadr(tlisp_value_t* targs) { return caaadr(car(targs)); }
+tlisp_value_t* primitive_caadar(tlisp_value_t* targs) { return caadar(car(targs)); }
+tlisp_value_t* primitive_caaddr(tlisp_value_t* targs) { return caaddr(car(targs)); }
+tlisp_value_t* primitive_cadaar(tlisp_value_t* targs) { return cadaar(car(targs)); }
+tlisp_value_t* primitive_cadadr(tlisp_value_t* targs) { return cadadr(car(targs)); }
+tlisp_value_t* primitive_caddar(tlisp_value_t* targs) { return caddar(car(targs)); }
+tlisp_value_t* primitive_cadddr(tlisp_value_t* targs) { return cadddr(car(targs)); }
+tlisp_value_t* primitive_cdaaar(tlisp_value_t* targs) { return cdaaar(car(targs)); }
+tlisp_value_t* primitive_cdaadr(tlisp_value_t* targs) { return cdaadr(car(targs)); }
+tlisp_value_t* primitive_cdadar(tlisp_value_t* targs) { return cdadar(car(targs)); }
+tlisp_value_t* primitive_cdaddr(tlisp_value_t* targs) { return cdaddr(car(targs)); }
+tlisp_value_t* primitive_cddaar(tlisp_value_t* targs) { return cddaar(car(targs)); }
+tlisp_value_t* primitive_cddadr(tlisp_value_t* targs) { return cddadr(car(targs)); }
+tlisp_value_t* primitive_cdddar(tlisp_value_t* targs) { return cdddar(car(targs)); }
+tlisp_value_t* primitive_cddddr(tlisp_value_t* targs) { return cddddr(car(targs)); }
 
 //// 算術演算
-lisp_value_t* primitive_add(lisp_value_t* args) { return make_number(car(args)->number + cadr(args)->number); }
-lisp_value_t* primitive_sub(lisp_value_t* args) { return make_number(car(args)->number - cadr(args)->number); }
-lisp_value_t* primitive_is_lessthan(lisp_value_t* args) {
-  if (car(args)->number < cadr(args)->number) return make_symbol("true");
+tlisp_value_t* primitive_add(tlisp_value_t* targs) {
+  return make_number(REM_TAG(car(targs))->number + REM_TAG(cadr(targs))->number);
+}
+tlisp_value_t* primitive_sub(tlisp_value_t* targs) {
+  return make_number(REM_TAG(car(targs))->number - REM_TAG(cadr(targs))->number);
+}
+tlisp_value_t* primitive_is_lessthan(tlisp_value_t* targs) {
+  if (REM_TAG(car(targs))->number < REM_TAG(cadr(targs))->number) return make_symbol("true");
   return make_null();
 }
 
 //// 論理演算
-lisp_value_t* primitive_not(lisp_value_t* args) {
-  if (car(args)->type == lisp_null_type) return make_symbol("true");
+tlisp_value_t* primitive_not(tlisp_value_t* targs) {
+  if (GET_TAG(car(targs)) == LISP_NULL_TYPE) return make_symbol("true");
   return make_null();
 }
 
 //// types
-lisp_value_t* primitive_is_number(lisp_value_t* args) {
-  if (car(args)->type == lisp_number_type) return make_symbol("true");
+tlisp_value_t* primitive_is_number(tlisp_value_t* targs) {
+  if (GET_TAG(car(targs)) == LISP_NUMBER_TYPE) return make_symbol("true");
   return make_null();
 }
-lisp_value_t* primitive_is_symbol(lisp_value_t* args) {
-  if (car(args)->type == lisp_symbol_type) return make_symbol("true");
+tlisp_value_t* primitive_is_symbol(tlisp_value_t* targs) {
+  if (GET_TAG(car(targs)) == LISP_SYMBOL_TYPE) return make_symbol("true");
   return make_null();
 }
-lisp_value_t* primitive_is_null(lisp_value_t* args) {
-  if (car(args)->type == lisp_null_type) return make_symbol("true");
+tlisp_value_t* primitive_is_null(tlisp_value_t* targs) {
+  if (GET_TAG(car(targs)) == LISP_NULL_TYPE) return make_symbol("true");
   return make_null();
 }
 
 //// utils
-lisp_value_t* primitive_list(lisp_value_t* args) { return args; }
-lisp_value_t* primitive_length(lisp_value_t* args) { return make_number(length(car(args))); }
-lisp_value_t* primitive_is_eq(lisp_value_t* args) {
-  if (is_eq(car(args), cadr(args))) return make_symbol("true");
+tlisp_value_t* primitive_list(tlisp_value_t* targs) { return targs; }
+tlisp_value_t* primitive_length(tlisp_value_t* targs) { return make_number(length(car(targs))); }
+tlisp_value_t* primitive_is_eq(tlisp_value_t* targs) {
+  if (is_eq(car(targs), cadr(targs))) return make_symbol("true");
   return make_null();
 }
-lisp_value_t* primitive_displayln(lisp_value_t* args) {
-  printf_lisp_value(car(args));
+tlisp_value_t* primitive_displayln(tlisp_value_t* targs) {
+  printf_lisp_value(car(targs));
   return make_null();
 }
-lisp_value_t* primitive_error(lisp_value_t* args) {
-  printf_lisp_value(car(args));
+tlisp_value_t* primitive_error(tlisp_value_t* targs) {
+  printf_lisp_value(car(targs));
   exit(1);
 }
 char** argv = NULL;
 void register_argv(char** v) { argv = v; }
-lisp_value_t* primitive_read_from_file(lisp_value_t* args) {
+tlisp_value_t* primitive_read_from_file(tlisp_value_t* targs) {
   struct stat statBuf;
   stat(argv[1], &statBuf);
   FILE* file = fopen(argv[1], "r");
@@ -116,7 +122,7 @@ lisp_value_t* primitive_read_from_file(lisp_value_t* args) {
   input_buffer[statBuf.st_size] = '\0';
   fread(input_buffer, sizeof(char), statBuf.st_size, file);
 
-  lisp_value_t* parse_result = NULL;
+  tlisp_value_t* parse_result = NULL;
   char* input = input_buffer;
 
   // racketの#langショートハンドを飛ばす
@@ -133,8 +139,8 @@ lisp_value_t* primitive_read_from_file(lisp_value_t* args) {
   return parse_result;
 }
 
-lisp_value_t* get_primitive_procedures() {
-  lisp_value_t* primitive_procedures = list(                                                               //
+tlisp_value_t* get_primitive_procedures() {
+  tlisp_value_t* primitive_procedures = list(                                                              //
       list(make_symbol("primitive-base-apply"), make_internal_primitive_procedure(primitive_base_apply)),  //
       // pair
       list(make_symbol("car"), make_internal_primitive_procedure(primitive_car)),           //
@@ -198,31 +204,31 @@ lisp_value_t* get_primitive_procedures() {
   return primitive_procedures;
 }
 
-lisp_value_t* get_primitive_procedure_names() { return map(car, get_primitive_procedures()); }
-lisp_value_t* get_primitive_procedure_objects_lambda(lisp_value_t* proc) {
-  return list(make_symbol("primitive"), cadr(proc));
+tlisp_value_t* get_primitive_procedure_names() { return map(car, get_primitive_procedures()); }
+tlisp_value_t* get_primitive_procedure_objects_lambda(tlisp_value_t* tproc) {
+  return list(make_symbol("primitive"), cadr(tproc));
 }
-lisp_value_t* get_primitive_procedure_objects() {
+tlisp_value_t* get_primitive_procedure_objects() {
   return map(get_primitive_procedure_objects_lambda, get_primitive_procedures());
 }
 
-lisp_value_t* apply_primitive_procedure(lisp_value_t* proc, lisp_value_t* args) {
-  return primitive_implementation(proc)->internal_primitive_procedure(args);
+tlisp_value_t* apply_primitive_procedure(tlisp_value_t* tproc, tlisp_value_t* targs) {
+  return REM_TAG(primitive_implementation(tproc))->internal_primitive_procedure(targs);
 }
 
 // compound procedure
-lisp_value_t* make_procedure(lisp_value_t* parameters, lisp_value_t* body, lisp_value_t* env) {
-  return list(make_symbol("procedure"), parameters, body, env);
+tlisp_value_t* make_procedure(tlisp_value_t* tparameters, tlisp_value_t* tbody, tlisp_value_t* tenv) {
+  return list(make_symbol("procedure"), tparameters, tbody, tenv);
 }
-bool is_compound_procedure(lisp_value_t* p) { return tagged_list(p, "procedure"); }
-lisp_value_t* procedure_parameters(lisp_value_t* p) { return cadr(p); }
-lisp_value_t* procedure_body(lisp_value_t* p) { return caddr(p); }
-lisp_value_t* procedure_environment(lisp_value_t* p) { return cadddr(p); }
+bool is_compound_procedure(tlisp_value_t* tproc) { return tagged_list(tproc, "procedure"); }
+tlisp_value_t* procedure_parameters(tlisp_value_t* tproc) { return cadr(tproc); }
+tlisp_value_t* procedure_body(tlisp_value_t* tproc) { return caddr(tproc); }
+tlisp_value_t* procedure_environment(tlisp_value_t* tproc) { return cadddr(tproc); }
 
 // compiled procedure: ex5.52で必要
-lisp_value_t* make_compiled_procedure(lisp_value_t* entry, lisp_value_t* env) {
-  return list(make_symbol("compiled-procedure"), entry, env);
+tlisp_value_t* make_compiled_procedure(tlisp_value_t* tentry, tlisp_value_t* tenv) {
+  return list(make_symbol("compiled-procedure"), tentry, tenv);
 }
-bool is_compiled_procedure(lisp_value_t* proc) { return tagged_list(proc, "compiled-procedure"); }
-lisp_value_t* compiled_procedure_entry(lisp_value_t* c_proc) { return cadr(c_proc); }
-lisp_value_t* compiled_procedure_env(lisp_value_t* c_proc) { return caddr(c_proc); }
+bool is_compiled_procedure(tlisp_value_t* tproc) { return tagged_list(tproc, "compiled-procedure"); }
+tlisp_value_t* compiled_procedure_entry(tlisp_value_t* tcproc) { return cadr(tcproc); }
+tlisp_value_t* compiled_procedure_env(tlisp_value_t* tcproc) { return caddr(tcproc); }

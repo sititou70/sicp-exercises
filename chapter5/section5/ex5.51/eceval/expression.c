@@ -6,110 +6,110 @@
 #include "../machine/utils.h"
 #include "tag.h"
 
-bool is_self_evaluating(lisp_value_t* exp) {
-  if (exp->type == lisp_number_type) return true;
+bool is_self_evaluating(tlisp_value_t* texp) {
+  if (GET_TAG(texp) == LISP_NUMBER_TYPE) return true;
   return false;
 }
 
-bool is_variable(lisp_value_t* exp) {
-  if (exp->type == lisp_symbol_type) return true;
+bool is_variable(tlisp_value_t* texp) {
+  if (GET_TAG(texp) == LISP_SYMBOL_TYPE) return true;
   return false;
 }
 
-bool is_quoted(lisp_value_t* exp) { return tagged_list(exp, "quote"); }
-lisp_value_t* text_of_quotation(lisp_value_t* exp) { return cadr(exp); }
+bool is_quoted(tlisp_value_t* texp) { return tagged_list(texp, "quote"); }
+tlisp_value_t* text_of_quotation(tlisp_value_t* texp) { return cadr(texp); }
 
-bool is_assignment(lisp_value_t* exp) { return tagged_list(exp, "set!"); }
-lisp_value_t* assignment_variable(lisp_value_t* exp) { return cadr(exp); }
-lisp_value_t* assignment_value(lisp_value_t* exp) { return caddr(exp); }
+bool is_assignment(tlisp_value_t* texp) { return tagged_list(texp, "set!"); }
+tlisp_value_t* assignment_variable(tlisp_value_t* texp) { return cadr(texp); }
+tlisp_value_t* assignment_value(tlisp_value_t* texp) { return caddr(texp); }
 
-bool is_definition(lisp_value_t* exp) { return tagged_list(exp, "define"); }
-lisp_value_t* definition_variable(lisp_value_t* exp) {
-  if (cadr(exp)->type == lisp_symbol_type) {
-    return cadr(exp);
+bool is_definition(tlisp_value_t* texp) { return tagged_list(texp, "define"); }
+tlisp_value_t* definition_variable(tlisp_value_t* texp) {
+  if (GET_TAG(cadr(texp)) == LISP_SYMBOL_TYPE) {
+    return cadr(texp);
   } else {
-    return caadr(exp);
+    return caadr(texp);
   }
 }
-lisp_value_t* definition_value(lisp_value_t* exp) {
-  if (cadr(exp)->type == lisp_symbol_type) {
-    return caddr(exp);
+tlisp_value_t* definition_value(tlisp_value_t* texp) {
+  if (GET_TAG(cadr(texp)) == LISP_SYMBOL_TYPE) {
+    return caddr(texp);
   } else {
-    return make_lambda(cdadr(exp), cddr(exp));
+    return make_lambda(cdadr(texp), cddr(texp));
   }
 }
 
-bool is_if(lisp_value_t* exp) { return tagged_list(exp, "if"); }
-lisp_value_t* if_predicate(lisp_value_t* exp) { return cadr(exp); }
-lisp_value_t* if_consequent(lisp_value_t* exp) { return caddr(exp); }
-lisp_value_t* if_alternative(lisp_value_t* exp) {
-  if (cdddr(exp)->type != lisp_null_type) {
-    return cadddr(exp);
+bool is_if(tlisp_value_t* texp) { return tagged_list(texp, "if"); }
+tlisp_value_t* if_predicate(tlisp_value_t* texp) { return cadr(texp); }
+tlisp_value_t* if_consequent(tlisp_value_t* texp) { return caddr(texp); }
+tlisp_value_t* if_alternative(tlisp_value_t* texp) {
+  if (GET_TAG(cdddr(texp)) != LISP_NULL_TYPE) {
+    return cadddr(texp);
   } else {
     return make_symbol("false");
   }
 }
-lisp_value_t* make_if(lisp_value_t* predicate, lisp_value_t* consequent, lisp_value_t* alternative) {
-  return list(make_symbol("if"), predicate, consequent, alternative);
+tlisp_value_t* make_if(tlisp_value_t* tpredicate, tlisp_value_t* tconsequent, tlisp_value_t* talternative) {
+  return list(make_symbol("if"), tpredicate, tconsequent, talternative);
 }
 
-bool is_lambda(lisp_value_t* exp) { return tagged_list(exp, "lambda"); }
-lisp_value_t* lambda_parameters(lisp_value_t* exp) { return cadr(exp); }
-lisp_value_t* lambda_body(lisp_value_t* exp) { return cddr(exp); }
-lisp_value_t* make_lambda(lisp_value_t* parameters, lisp_value_t* body) {
-  return cons(make_symbol("lambda"), cons(parameters, body));
+bool is_lambda(tlisp_value_t* texp) { return tagged_list(texp, "lambda"); }
+tlisp_value_t* lambda_parameters(tlisp_value_t* texp) { return cadr(texp); }
+tlisp_value_t* lambda_body(tlisp_value_t* texp) { return cddr(texp); }
+tlisp_value_t* make_lambda(tlisp_value_t* tparameters, tlisp_value_t* tbody) {
+  return cons(make_symbol("lambda"), cons(tparameters, tbody));
 }
 
-bool is_begin(lisp_value_t* exp) { return tagged_list(exp, "begin"); }
-lisp_value_t* begin_actions(lisp_value_t* exp) { return cdr(exp); }
-bool is_last_exp(lisp_value_t* seq) { return cdr(seq)->type == lisp_null_type; }
-lisp_value_t* first_exp(lisp_value_t* seq) { return car(seq); }
-lisp_value_t* rest_exps(lisp_value_t* seq) { return cdr(seq); }
-lisp_value_t* sequence_to_exp(lisp_value_t* seq) {
-  if (seq->type == lisp_null_type) return seq;
-  if (is_last_exp(seq)) return first_exp(seq);
-  return make_begin(seq);
+bool is_begin(tlisp_value_t* texp) { return tagged_list(texp, "begin"); }
+tlisp_value_t* begin_actions(tlisp_value_t* texp) { return cdr(texp); }
+bool is_last_exp(tlisp_value_t* tseq) { return GET_TAG(cdr(tseq)) == LISP_NULL_TYPE; }
+tlisp_value_t* first_exp(tlisp_value_t* tseq) { return car(tseq); }
+tlisp_value_t* rest_exps(tlisp_value_t* tseq) { return cdr(tseq); }
+tlisp_value_t* sequence_to_exp(tlisp_value_t* tseq) {
+  if (GET_TAG(tseq) == LISP_NULL_TYPE) return tseq;
+  if (is_last_exp(tseq)) return first_exp(tseq);
+  return make_begin(tseq);
 }
-lisp_value_t* make_begin(lisp_value_t* seq) { return cons(make_symbol("begin"), seq); }
+tlisp_value_t* make_begin(tlisp_value_t* tseq) { return cons(make_symbol("begin"), tseq); }
 
-bool is_cond(lisp_value_t* exp) { return tagged_list(exp, "cond"); }
-lisp_value_t* cond_clauses(lisp_value_t* exp) { return cdr(exp); }
-bool is_cond_else_clause(lisp_value_t* clause) { return is_eq(cond_predicate(clause), make_symbol("else")); }
-lisp_value_t* cond_predicate(lisp_value_t* clause) { return car(clause); }
-lisp_value_t* cond_actions(lisp_value_t* clause) { return cdr(clause); }
-lisp_value_t* cond_to_if(lisp_value_t* exp) { return expand_clauses(cond_clauses(exp)); }
-lisp_value_t* expand_clauses(lisp_value_t* clauses) {
-  if (clauses->type == lisp_null_type) return make_symbol("false");
+bool is_cond(tlisp_value_t* texp) { return tagged_list(texp, "cond"); }
+tlisp_value_t* cond_clauses(tlisp_value_t* texp) { return cdr(texp); }
+bool is_cond_else_clause(tlisp_value_t* tclause) { return is_eq(cond_predicate(tclause), make_symbol("else")); }
+tlisp_value_t* cond_predicate(tlisp_value_t* tclause) { return car(tclause); }
+tlisp_value_t* cond_actions(tlisp_value_t* tclause) { return cdr(tclause); }
+tlisp_value_t* cond_to_if(tlisp_value_t* texp) { return expand_clauses(cond_clauses(texp)); }
+tlisp_value_t* expand_clauses(tlisp_value_t* tclauses) {
+  if (GET_TAG(tclauses) == LISP_NULL_TYPE) return make_symbol("false");
 
-  lisp_value_t* first = car(clauses);
-  lisp_value_t* rest = cdr(clauses);
+  tlisp_value_t* tfirst = car(tclauses);
+  tlisp_value_t* trest = cdr(tclauses);
 
-  if (is_cond_else_clause(first)) {
-    if (rest->type == lisp_null_type) {
-      return sequence_to_exp(cond_actions(first));
+  if (is_cond_else_clause(tfirst)) {
+    if (GET_TAG(trest) == LISP_NULL_TYPE) {
+      return sequence_to_exp(cond_actions(tfirst));
     } else {
       fprintf(stderr, "ELSE clause isn't last: COND->IF\n");
       exit(1);
     }
   } else {
-    return make_if(cond_predicate(first), sequence_to_exp(cond_actions(first)), expand_clauses(rest));
+    return make_if(cond_predicate(tfirst), sequence_to_exp(cond_actions(tfirst)), expand_clauses(trest));
   }
 }
 
-bool is_let(lisp_value_t* exp) { return tagged_list(exp, "let"); }
-lisp_value_t* let_binds(lisp_value_t* exp) { return cadr(exp); }
-lisp_value_t* let_body(lisp_value_t* exp) { return cddr(exp); }
-lisp_value_t* let_to_combination(lisp_value_t* exp) {
-  lisp_value_t* vars = map(car, let_binds(exp));
-  lisp_value_t* exps = map(cadr, let_binds(exp));
-  lisp_value_t* body = let_body(exp);
+bool is_let(tlisp_value_t* texp) { return tagged_list(texp, "let"); }
+tlisp_value_t* let_binds(tlisp_value_t* texp) { return cadr(texp); }
+tlisp_value_t* let_body(tlisp_value_t* texp) { return cddr(texp); }
+tlisp_value_t* let_to_combination(tlisp_value_t* texp) {
+  tlisp_value_t* tvars = map(car, let_binds(texp));
+  tlisp_value_t* texps = map(cadr, let_binds(texp));
+  tlisp_value_t* tbody = let_body(texp);
 
-  return append(list(make_lambda(vars, body)), exps);
+  return append(list(make_lambda(tvars, tbody)), texps);
 }
 
-bool is_application(lisp_value_t* exp) { return exp->type == lisp_pair_type; }
-lisp_value_t* operator(lisp_value_t* exp) { return car(exp); }
-lisp_value_t* operands(lisp_value_t* exp) { return cdr(exp); }
-bool is_no_operands(lisp_value_t* ops) { return ops->type == lisp_null_type; }
-lisp_value_t* first_operand(lisp_value_t* ops) { return car(ops); }
-lisp_value_t* rest_operands(lisp_value_t* ops) { return cdr(ops); }
+bool is_application(tlisp_value_t* texp) { return GET_TAG(texp) == LISP_PAIR_TYPE; }
+tlisp_value_t* operator(tlisp_value_t* texp) { return car(texp); }
+tlisp_value_t* operands(tlisp_value_t* texp) { return cdr(texp); }
+bool is_no_operands(tlisp_value_t* tops) { return GET_TAG(tops) == LISP_NULL_TYPE; }
+tlisp_value_t* first_operand(tlisp_value_t* tops) { return car(tops); }
+tlisp_value_t* rest_operands(tlisp_value_t* tops) { return cdr(tops); }
