@@ -3,7 +3,7 @@
 
 #include "primitives.h"
 
-#define STACK_SIZE 128
+#define STACK_SIZE 256
 
 extern lisp_value_t* stack[];
 extern size_t stack_index;
